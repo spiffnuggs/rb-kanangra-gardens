@@ -199,8 +199,8 @@ section {
 /* --- REVEAL ANIMATIONS --- */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .reveal.visible {
   opacity: 1;
@@ -216,6 +216,14 @@ section {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes softGlow {
+  0%, 100% { text-shadow: 0 2px 20px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3); }
+  50% { text-shadow: 0 2px 30px rgba(141,180,204,0.3), 0 1px 3px rgba(0,0,0,0.3); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -491,6 +499,7 @@ section {
 .hero h1 em {
   font-style: italic;
   color: var(--highlight);
+  animation: softGlow 4s ease-in-out 2s infinite;
 }
 .hero-subtitle {
   font-size: clamp(15px, 2vw, 18px);
@@ -733,7 +742,9 @@ section {
   align-items: center;
   gap: 10px;
   white-space: nowrap;
+  transition: transform 0.3s ease;
 }
+.trust-item:hover { transform: translateY(-2px); }
 .trust-icon {
   width: 36px;
   height: 36px;
@@ -1079,8 +1090,10 @@ section {
   transform-style: preserve-3d;
   transition: transform 1s cubic-bezier(0.25, 0.46, 0.35, 1.0);
 }
-.pillar-card:hover .pillar-flip {
-  transform: rotateY(180deg);
+@media (hover: hover) {
+  .pillar-card:hover .pillar-flip {
+    transform: rotateY(180deg);
+  }
 }
 .pillar-card.flipped .pillar-flip {
   transform: rotateY(180deg);
@@ -1154,15 +1167,29 @@ section {
   aspect-ratio: 1/1;
   border-radius: clamp(12px, 2vw, var(--radius-lg));
   overflow: hidden;
+  position: relative;
+  cursor: pointer;
 }
+.flower-grid-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(180, 98, 126, 0.12);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.flower-grid-item:hover::after { opacity: 0; }
 .flower-grid-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, filter 0.5s ease;
+  filter: saturate(0.85);
 }
 .flower-grid-item:hover img {
   transform: scale(1.08);
+  filter: saturate(1.15);
 }
 .flower-label {
   position: absolute;
@@ -1858,7 +1885,7 @@ section {
    CONTACT
    ============================================================ */
 .contact-section {
-  background: var(--surface);
+  background: linear-gradient(to bottom, var(--bg) 0%, var(--surface) 15%);
 }
 .contact-grid {
   display: grid;
@@ -1942,7 +1969,7 @@ section {
   background: var(--bg);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: clamp(20px, 4vw, 36px);
+  padding: clamp(24px, 4vw, 40px);
 }
 .form-group {
   margin-bottom: 20px;
@@ -2202,17 +2229,24 @@ section {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 16px;
-    padding-bottom: 8px;
+    gap: 12px;
+    padding: 0 16px 8px;
     max-width: none;
-    padding-left: 0;
-    padding-right: 0;
   }
   .pillar-card {
-    flex: 0 0 85%;
-    scroll-snap-align: start;
+    flex: 0 0 52%;
+    scroll-snap-align: center;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(28,42,66,0.06);
   }
-  .pillar-flip-back { padding: 24px; }
+  .pillar-card-photo { height: 200px; border-radius: 16px 16px 0 0; }
+  .pillar-card-body { padding: 14px 16px 18px; }
+  .pillar-card-body .pillar-number { font-size: 10px; margin-bottom: 4px; }
+  .pillar-card-body h3 { font-size: 15px; margin-bottom: 4px; }
+  .pillar-card-body p { font-size: 11px; line-height: 1.5; }
+  .pillar-flip-back { padding: 20px; font-size: 13px; }
+  .pillar-flip-back h4 { font-size: 16px; }
+  .pillar-flip-back p { font-size: 12px; }
 
   /* Specs cards — 2x2 glass tiles with inline bloom expand */
   /* Hide desktop grid, show mobile stack */
@@ -2338,50 +2372,59 @@ section {
   }
   .mobile-open .flower-sticker.bl { transition-delay: 0.15s; }
 
-  /* Testimonials — pill selector layout */
+  /* Testimonials — editorial arrows on mobile */
   .testimonials-grid,
   .testimonials-more,
-  .testimonials-toggle { display: none !important; }
+  .testimonials-toggle,
+  .mobile-testimonial-featured,
+  .mobile-testimonial-pills { display: none !important; }
 
-  .mobile-testimonial-featured {
-    display: block !important;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
+  .mobile-editorial { display: block !important; }
+  .mobile-editorial-stage {
     text-align: center;
-    min-height: 160px;
-    transition: opacity 0.3s ease;
+    position: relative;
+    min-height: 200px;
+    padding: 0 20px;
   }
-  .mobile-testimonial-featured .testimonial-quote {
-    font-size: 16px;
-    color: var(--accent);
-    margin-bottom: 8px;
+  .me-card {
+    position: absolute; inset: 0; padding: 0 20px;
+    opacity: 0; transform: translateX(16px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    pointer-events: none;
   }
-  .mobile-testimonial-featured .quote-text {
+  .me-card.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .me-card .me-q {
     font-family: var(--font-display);
-    font-style: italic;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--text);
-    margin-bottom: 16px;
+    font-size: 15px; font-style: italic;
+    color: var(--text); line-height: 1.65;
+    margin-bottom: 14px; padding: 18px 0;
+    border-top: 1px solid var(--accent-light);
+    border-bottom: 1px solid var(--accent-light);
   }
-  .mobile-testimonial-featured .featured-author {
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--text);
+  .me-card .me-name { font-weight: 600; font-size: 13px; color: var(--text); }
+  .me-card .me-role { font-size: 11px; color: var(--text-ghost); margin-top: 2px; }
+  .me-card .me-line {
+    width: 40px; height: 1px; background: var(--accent-light);
+    margin: 12px auto 0; opacity: 0.5;
   }
-  .mobile-testimonial-featured .featured-role {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
+  .me-arrows {
+    display: flex; justify-content: center; gap: 14px; margin-top: 16px;
   }
-
-  .mobile-testimonial-pills {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-top: 16px;
+  .me-arrow {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .me-arrow:active { background: var(--accent-dim); border-color: var(--accent); }
+  .me-arrow svg {
+    width: 15px; height: 15px; stroke: var(--text-muted);
+    fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .me-counter {
+    text-align: center; font-size: 10px; color: var(--text-ghost); margin-top: 8px;
   }
   .test-pill {
     display: flex;
@@ -2424,7 +2467,7 @@ section {
   .flower-grid-inner {
     display: flex;
     gap: 3px;
-    padding: 0;
+    padding: 0 3px;
   }
   .flower-grid-item {
     flex: 1;
@@ -2454,7 +2497,12 @@ section {
   .gallery-featured { aspect-ratio: 16/9; }
   .gallery-pano { aspect-ratio: 16/7; }
 
-  .contact-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; gap: 28px; }
+  .contact-info > p { margin-bottom: 16px !important; font-size: 13px !important; }
+  .contact-detail { margin-bottom: 4px !important; padding: 10px 12px !important; }
+  .contact-detail-icon { width: 38px; height: 38px; }
+  .contact-detail-text strong { font-size: 12px; }
+  .contact-detail-text span { font-size: 13px; }
   .contact-form { padding: clamp(20px, 4vw, 36px); }
 
   .footer-nav { gap: 6px 20px; }
@@ -2487,9 +2535,10 @@ section {
   /* FAQ — compact on mobile */
   .faq-section { padding: 36px 0 !important; }
   .faq-item { margin-bottom: 8px; }
-  .faq-item summary { padding: 14px 16px; font-size: 13px; font-family: var(--font-body); font-weight: 500; }
-  .faq-item summary::after { font-size: 16px; }
-  .faq-item p { padding: 0 16px 14px; font-size: 12px; }
+  .faq-item summary { padding: 12px 14px !important; font-size: 12px !important; font-family: var(--font-body) !important; font-weight: 500 !important; gap: 10px !important; }
+  .faq-item summary::after { font-size: 14px !important; }
+  .faq-item { margin-bottom: 6px; border-radius: 12px !important; }
+  .faq-item p { padding: 0 14px 12px !important; font-size: 11px !important; }
 
   /* Service areas — compact on mobile */
   .areas-section { padding: 40px 0 !important; }
@@ -2960,11 +3009,10 @@ section {
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <p class="hero-eyebrow">Est. 1990 &mdash; Sydney</p>
-    <h1>Sydney Landscaping &amp; Garden Maintenance <em>Since 1990</em></h1>
-    <p class="hero-subtitle">R.B. Kanangra Gardens — 35 years of horticultural stewardship for Sydney's finest residential estates, corporate grounds, and strata communities.</p>
+    <h1>Gardens that <em>Mature</em>. Relationships that Last.</h1>
+    <p class="hero-subtitle">Horticultural stewardship for Sydney's finest estates and private gardens. 35 years and growing.</p>
     <div class="hero-buttons">
       <a href="#contact" class="btn btn-primary">Request a Site Consultation</a>
-      <a href="#gardens" class="btn btn-outline">View Our Gardens</a>
     </div>
   </div>
   <div class="hero-wave">
@@ -3438,14 +3486,22 @@ section {
       <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
 
-    <!-- Mobile pill-based testimonials (hidden on desktop) -->
-    <div class="mobile-testimonial-featured" id="mobileTestFeatured" style="display:none;">
-      <div class="testimonial-quote">&ldquo;</div>
-      <p class="quote-text" id="mobileTestText"></p>
-      <div class="featured-author" id="mobileTestName"></div>
-      <div class="featured-role" id="mobileTestRole"></div>
+    <!-- Mobile editorial testimonials (hidden on desktop) -->
+    <div class="mobile-editorial" style="display:none;">
+      <div class="mobile-editorial-stage" id="meStage">
+        <div class="me-card active" data-me="0"><p class="me-q">&ldquo;Ray has been attending to our extensive gardens at Glenhurst Gardens for over 13 years. His personal attention to detail and prompt communication are always appreciated.&rdquo;</p><div class="me-name">Edward Huntley</div><div class="me-role">Chairman, Glenhurst Gardens</div><div class="me-line"></div></div>
+        <div class="me-card" data-me="1"><p class="me-q">&ldquo;Ray came up with a practical, cost-effective solution which we loved then and still do now, years later. People still walk by and tell us what a beautiful garden we have.&rdquo;</p><div class="me-name">Karen Hayne</div><div class="me-role">Homeowner, Mosman</div><div class="me-line"></div></div>
+        <div class="me-card" data-me="2"><p class="me-q">&ldquo;Ray is just an amazing gardener. He&rsquo;s been landscaping and maintaining the gardens for all my businesses, homes, and buildings. Ray is an artist.&rdquo;</p><div class="me-name">Brad Garlick</div><div class="me-role">Brad Garlick Ford, Ryde</div><div class="me-line"></div></div>
+        <div class="me-card" data-me="3"><p class="me-q">&ldquo;Ray is highly professional, knowledgeable and pays attention to the small things. He is the only landscaper we recommend with confidence.&rdquo;</p><div class="me-name">Nick Musarevski</div><div class="me-role">Tazman Constructions</div><div class="me-line"></div></div>
+        <div class="me-card" data-me="4"><p class="me-q">&ldquo;Ray takes on board what you want to achieve and comes up with a bespoke solution. I defy anyone to do a better job.&rdquo;</p><div class="me-name">David Blacklock</div><div class="me-role">Strata Committee, Alexandria</div><div class="me-line"></div></div>
+        <div class="me-card" data-me="5"><p class="me-q">&ldquo;Ray&rsquo;s standards are very high and he has extraordinary plant knowledge. He designs like a painting. After 2 years his gardens just look better and better.&rdquo;</p><div class="me-name">Julia Day</div><div class="me-role">Former Staff Member</div><div class="me-line"></div></div>
+      </div>
+      <div class="me-arrows">
+        <div class="me-arrow" onclick="meNav(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <div class="me-arrow" onclick="meNav(1)"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></div>
+      </div>
+      <div class="me-counter" id="meCount">1 of 6</div>
     </div>
-    <div class="mobile-testimonial-pills" id="mobileTestPills" style="display:none;"></div>
 
   </div>
 </section>
@@ -3541,8 +3597,8 @@ section {
         </div>
       </div>
 
-      <p class="explore-hint"><span class="hint-hover"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>hover to explore</span><span class="hint-touch"><svg viewBox="0 0 24 24"><path d="M15 15l-2 5L9 9l11 4-5 2z"/></svg>tap to explore</span></p>
     </div>
+    <p class="explore-hint"><span class="hint-hover"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>hover to explore</span><span class="hint-touch"><svg viewBox="0 0 24 24"><path d="M15 15l-2 5L9 9l11 4-5 2z"/></svg>swipe &amp; tap to explore</span></p>
   </div>
 </section>
 
@@ -3558,7 +3614,7 @@ section {
       <div class="ray-text reveal delay-2">
         <div class="ray-heading">
           <span class="section-label">Who We Are</span>
-          <h2>We don't just build gardens. We <em>listen</em> to them.</h2>
+          <h2>We don't just build gardens.<br>We <em>listen</em> to them.</h2>
         </div>
         <div class="ray-body">
           <p>R.B. Kanangra Gardens &mdash; formerly trading as RB Kanangra Landscapes &mdash; has been providing residential, corporate, and strata landscaping across Sydney since 1990. Founded by Ray Basha, we've built our reputation through trust, not advertising. Our clients find us through referrals from people who've watched us care for their gardens for 10, 15, even 25 years.</p>
@@ -3999,8 +4055,17 @@ function toggleMoreTestimonials() {
   toggle.querySelector('span').textContent = isOpen ? 'Show less' : 'More testimonials';
 }
 
+// --- Mobile editorial testimonials ---
+var meIdx = 0;
+window.meNav = function(dir) {
+  meIdx = (meIdx + dir + 6) % 6;
+  document.querySelectorAll('#meStage .me-card').forEach(function(c) { c.classList.remove('active'); });
+  document.querySelectorAll('#meStage .me-card')[meIdx].classList.add('active');
+  var counter = document.getElementById('meCount');
+  if (counter) counter.textContent = (meIdx + 1) + ' of 6';
+};
+
 // --- Pillar cards: tap to flip on touch ---
-// --- Mobile testimonial pills ---
 var testData = [
   { label: 'Strata', fullName: 'Edward Huntley', role: 'Chairman, Glenhurst Gardens', text: '\u201CRay has been attending to our extensive gardens at Glenhurst Gardens for over 13 years. His personal attention to detail and prompt communication are always appreciated.\u201D' },
   { label: 'Residential', fullName: 'Karen Hayne', role: 'Homeowner, Mosman', text: '\u201CRay came up with a practical, cost-effective solution which we loved then and still do now, years later. People still walk by and tell us what a beautiful garden we have.\u201D' },
