@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testimonial Mobile Options — Kanangra Gardens</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; font-size: 14px; color: #1C2A42; background: #FBF7F8; max-width: 420px; margin: 0 auto; padding: 16px; }
+h2 { font-family: 'Libre Baskerville', serif; font-size: 18px; margin: 40px 0 8px; color: #B4627E; }
+h2:first-child { margin-top: 16px; }
+p.desc { font-size: 12px; color: #647A94; margin-bottom: 16px; }
+hr { border: none; border-top: 1px solid #F3ECF0; margin: 40px 0; }
+
+/* Shared testimonial data */
+.quote-text { font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 13px; line-height: 1.6; color: #1C2A42; }
+.author-name { font-weight: 600; font-size: 13px; }
+.author-role { font-size: 11px; color: #647A94; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(180,98,126,0.1); color: #B4627E; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+
+/* ============================================================
+   OPTION 1: Single card carousel with dots
+   ============================================================ */
+.opt1-wrapper { position: relative; overflow: hidden; border-radius: 12px; background: #fff; border: 1px solid #eee; }
+.opt1-track { display: flex; transition: transform 0.4s ease; }
+.opt1-card { flex: 0 0 100%; padding: 24px; }
+.opt1-card .quote-text { margin-bottom: 16px; }
+.opt1-author { display: flex; align-items: center; gap: 10px; border-top: 1px solid #F3ECF0; padding-top: 14px; }
+.opt1-dots { display: flex; justify-content: center; gap: 6px; padding: 12px 0; }
+.opt1-dot { width: 6px; height: 6px; border-radius: 50%; background: #ddd; cursor: pointer; transition: all 0.3s; }
+.opt1-dot.active { background: #B4627E; width: 18px; border-radius: 3px; }
+
+/* ============================================================
+   OPTION 2: Accordion — tap name to expand quote
+   ============================================================ */
+.opt2-item { border-bottom: 1px solid #F3ECF0; }
+.opt2-header { display: flex; align-items: center; gap: 10px; padding: 14px 0; cursor: pointer; }
+.opt2-header .arrow { margin-left: auto; font-size: 18px; color: #B4627E; transition: transform 0.3s; }
+.opt2-item.open .arrow { transform: rotate(180deg); }
+.opt2-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.opt2-item.open .opt2-body { max-height: 200px; }
+.opt2-body .quote-text { padding: 0 0 16px 42px; font-size: 12px; }
+
+/* ============================================================
+   OPTION 3: Horizontal scroll strip — compact cards
+   ============================================================ */
+.opt3-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 0 12px; scrollbar-width: none; }
+.opt3-scroll::-webkit-scrollbar { display: none; }
+.opt3-chip { flex: 0 0 260px; scroll-snap-align: start; background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #eee; }
+.opt3-chip .quote-text { font-size: 12px; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.opt3-author { display: flex; align-items: center; gap: 8px; }
+
+/* ============================================================
+   OPTION 4: Marquee / auto-scroll ticker
+   ============================================================ */
+.opt4-track { display: flex; gap: 16px; animation: marquee 30s linear infinite; width: max-content; }
+.opt4-wrapper { overflow: hidden; }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.opt4-card { flex: 0 0 240px; background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #eee; }
+.opt4-card .quote-text { font-size: 11px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.opt4-author { display: flex; align-items: center; gap: 8px; }
+
+/* ============================================================
+   OPTION 5: Big quote with name pills below
+   ============================================================ */
+.opt5-quote { background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #eee; text-align: center; margin-bottom: 16px; min-height: 180px; transition: opacity 0.3s ease; }
+.opt5-quote .quote-text { font-size: 14px; margin-bottom: 16px; }
+.opt5-quote .author-name { display: block; }
+.opt5-quote .author-role { display: block; margin-top: 2px; }
+.opt5-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.opt5-pill { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 20px; background: #fff; border: 1px solid #eee; cursor: pointer; transition: all 0.3s; font-size: 12px; }
+.opt5-pill.active { background: #B4627E; color: #fff; border-color: #B4627E; }
+.opt5-pill.active .avatar { background: rgba(255,255,255,0.3); color: #fff; }
+.opt5-pill .avatar { width: 24px; height: 24px; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<h1 style="font-family:'Libre Baskerville',serif; font-size:22px; margin-bottom:8px;">Mobile Testimonial Options</h1>
+<p class="desc">5 layout options for the testimonials section on mobile. Tap/interact with each.</p>
+
+<!-- ============================================================
+     OPTION 1: Swipeable carousel with dots
+     ============================================================ -->
+<h2>Option 1 — Swipe Carousel</h2>
+<p class="desc">One card at a time, swipe or tap dots. Clean, minimal scroll.</p>
+
+<div class="opt1-wrapper">
+  <div class="opt1-track" id="opt1Track">
+    <div class="opt1-card">
+      <p class="quote-text">"Ray has been attending to our extensive gardens at Glenhurst Gardens for over 13 years. His personal attention to detail and prompt communication are always appreciated."</p>
+      <div class="opt1-author"><div class="avatar">E</div><div><div class="author-name">Edward Huntley</div><div class="author-role">Chairman, Glenhurst Gardens</div></div></div>
+    </div>
+    <div class="opt1-card">
+      <p class="quote-text">"Ray came up with a practical, cost-effective solution which we loved then and still do now, years later. People still walk by and tell us what a beautiful garden we have."</p>
+      <div class="opt1-author"><div class="avatar">K</div><div><div class="author-name">Karen Hayne</div><div class="author-role">Homeowner, Mosman</div></div></div>
+    </div>
+    <div class="opt1-card">
+      <p class="quote-text">"Ray is just an amazing gardener. He's been landscaping and maintaining the gardens for all my businesses, homes, and the buildings we now live in."</p>
+      <div class="opt1-author"><div class="avatar">B</div><div><div class="author-name">Brad Garlick</div><div class="author-role">Brad Garlick Ford, Ryde</div></div></div>
+    </div>
+  </div>
+</div>
+<div class="opt1-dots" id="opt1Dots">
+  <div class="opt1-dot active" onclick="goSlide(0)"></div>
+  <div class="opt1-dot" onclick="goSlide(1)"></div>
+  <div class="opt1-dot" onclick="goSlide(2)"></div>
+</div>
+
+<script>
+var opt1Idx = 0;
+function goSlide(i) {
+  opt1Idx = i;
+  document.getElementById('opt1Track').style.transform = 'translateX(-' + (i * 100) + '%)';
+  document.querySelectorAll('.opt1-dot').forEach(function(d,j){ d.classList.toggle('active', j===i); });
+}
+var startX;
+document.querySelector('.opt1-wrapper').addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; });
+document.querySelector('.opt1-wrapper').addEventListener('touchend', function(e){
+  var diff = startX - e.changedTouches[0].clientX;
+  if (diff > 40 && opt1Idx < 2) goSlide(opt1Idx + 1);
+  if (diff < -40 && opt1Idx > 0) goSlide(opt1Idx - 1);
+});
+</script>
+
+<hr>
+
+<!-- ============================================================
+     OPTION 2: Accordion
+     ============================================================ -->
+<h2>Option 2 — Accordion</h2>
+<p class="desc">Tap a name to reveal their quote. Only one open at a time. Very compact.</p>
+
+<div>
+  <div class="opt2-item open">
+    <div class="opt2-header" onclick="toggleAcc(this)"><div class="avatar">E</div><div><div class="author-name">Edward Huntley</div><div class="author-role">Chairman, Glenhurst Gardens</div></div><span class="arrow">&#x25BE;</span></div>
+    <div class="opt2-body"><p class="quote-text">"Ray has been attending to our extensive gardens at Glenhurst Gardens for over 13 years. His personal attention to detail and prompt communication are always appreciated."</p></div>
+  </div>
+  <div class="opt2-item">
+    <div class="opt2-header" onclick="toggleAcc(this)"><div class="avatar">K</div><div><div class="author-name">Karen Hayne</div><div class="author-role">Homeowner, Mosman</div></div><span class="arrow">&#x25BE;</span></div>
+    <div class="opt2-body"><p class="quote-text">"Ray came up with a practical, cost-effective solution which we loved then and still do now, years later. People still walk by and tell us what a beautiful garden we have."</p></div>
+  </div>
+  <div class="opt2-item">
+    <div class="opt2-header" onclick="toggleAcc(this)"><div class="avatar">B</div><div><div class="author-name">Brad Garlick</div><div class="author-role">Brad Garlick Ford, Ryde</div></div><span class="arrow">&#x25BE;</span></div>
+    <div class="opt2-body"><p class="quote-text">"Ray is just an amazing gardener. He's been landscaping and maintaining the gardens for all my businesses, homes, and the buildings we now live in."</p></div>
+  </div>
+  <div class="opt2-item">
+    <div class="opt2-header" onclick="toggleAcc(this)"><div class="avatar">N</div><div><div class="author-name">Nick Musarevski</div><div class="author-role">Tazman Constructions</div></div><span class="arrow">&#x25BE;</span></div>
+    <div class="opt2-body"><p class="quote-text">"Ray is highly professional, knowledgeable and pays attention to the small things. He is the only landscaper we recommend with confidence."</p></div>
+  </div>
+  <div class="opt2-item">
+    <div class="opt2-header" onclick="toggleAcc(this)"><div class="avatar">S</div><div><div class="author-name">Sue Woodward</div><div class="author-role">Homeowner, Mosman</div></div><span class="arrow">&#x25BE;</span></div>
+    <div class="opt2-body"><p class="quote-text">"Ray is always proactive with affordable, practical ideas that don't bust your budget. I totally trust Ray to give good value."</p></div>
+  </div>
+</div>
+
+<script>
+function toggleAcc(header) {
+  var item = header.parentElement;
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.opt2-item.open').forEach(function(el){ el.classList.remove('open'); });
+  if (!wasOpen) item.classList.add('open');
+}
+</script>
+
+<hr>
+
+<!-- ============================================================
+     OPTION 3: Horizontal scroll compact cards
+     ============================================================ -->
+<h2>Option 3 — Scroll Strip</h2>
+<p class="desc">Small cards in a horizontal scroll. Shows peek of next card.</p>
+
+<div class="opt3-scroll">
+  <div class="opt3-chip">
+    <p class="quote-text">"Ray has been attending to our extensive gardens for over 13 years. His personal attention to detail are always appreciated."</p>
+    <div class="opt3-author"><div class="avatar">E</div><div><div class="author-name">Edward Huntley</div><div class="author-role">Glenhurst Gardens</div></div></div>
+  </div>
+  <div class="opt3-chip">
+    <p class="quote-text">"Ray came up with a practical, cost-effective solution which we loved then and still do now, years later."</p>
+    <div class="opt3-author"><div class="avatar">K</div><div><div class="author-name">Karen Hayne</div><div class="author-role">Mosman</div></div></div>
+  </div>
+  <div class="opt3-chip">
+    <p class="quote-text">"Ray is just an amazing gardener. Every garden is so different, not at all standard."</p>
+    <div class="opt3-author"><div class="avatar">B</div><div><div class="author-name">Brad Garlick</div><div class="author-role">Brad Garlick Ford</div></div></div>
+  </div>
+  <div class="opt3-chip">
+    <p class="quote-text">"Ray is highly professional and pays attention to the small things. The only landscaper we recommend with confidence."</p>
+    <div class="opt3-author"><div class="avatar">N</div><div><div class="author-name">Nick Musarevski</div><div class="author-role">Tazman Constructions</div></div></div>
+  </div>
+  <div class="opt3-chip">
+    <p class="quote-text">"I totally trust Ray to give good value. He really knows about plants and takes a vested long term interest."</p>
+    <div class="opt3-author"><div class="avatar">S</div><div><div class="author-name">Sue Woodward</div><div class="author-role">Mosman</div></div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ============================================================
+     OPTION 4: Auto-scrolling marquee
+     ============================================================ -->
+<h2>Option 4 — Auto Marquee</h2>
+<p class="desc">Continuously scrolling testimonial cards. No interaction needed — feels alive.</p>
+
+<div class="opt4-wrapper">
+  <div class="opt4-track">
+    <div class="opt4-card"><p class="quote-text">"His personal attention to detail and prompt communication are always appreciated."</p><div class="opt4-author"><div class="avatar">E</div><div><div class="author-name">Edward Huntley</div><div class="author-role">Glenhurst Gardens</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"People still walk by and tell us what a beautiful garden we have."</p><div class="opt4-author"><div class="avatar">K</div><div><div class="author-name">Karen Hayne</div><div class="author-role">Mosman</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"Ray is an artist. Every garden is so different, not at all standard."</p><div class="opt4-author"><div class="avatar">B</div><div><div class="author-name">Brad Garlick</div><div class="author-role">Brad Garlick Ford</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"The only landscaper we recommend with confidence."</p><div class="opt4-author"><div class="avatar">N</div><div><div class="author-name">Nick Musarevski</div><div class="author-role">Tazman</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"I totally trust Ray to give good value."</p><div class="opt4-author"><div class="avatar">S</div><div><div class="author-name">Sue Woodward</div><div class="author-role">Mosman</div></div></div></div>
+    <!-- Duplicates for seamless loop -->
+    <div class="opt4-card"><p class="quote-text">"His personal attention to detail and prompt communication are always appreciated."</p><div class="opt4-author"><div class="avatar">E</div><div><div class="author-name">Edward Huntley</div><div class="author-role">Glenhurst Gardens</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"People still walk by and tell us what a beautiful garden we have."</p><div class="opt4-author"><div class="avatar">K</div><div><div class="author-name">Karen Hayne</div><div class="author-role">Mosman</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"Ray is an artist. Every garden is so different, not at all standard."</p><div class="opt4-author"><div class="avatar">B</div><div><div class="author-name">Brad Garlick</div><div class="author-role">Brad Garlick Ford</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"The only landscaper we recommend with confidence."</p><div class="opt4-author"><div class="avatar">N</div><div><div class="author-name">Nick Musarevski</div><div class="author-role">Tazman</div></div></div></div>
+    <div class="opt4-card"><p class="quote-text">"I totally trust Ray to give good value."</p><div class="opt4-author"><div class="avatar">S</div><div><div class="author-name">Sue Woodward</div><div class="author-role">Mosman</div></div></div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ============================================================
+     OPTION 5: Featured quote with name pills
+     ============================================================ -->
+<h2>Option 5 — Name Pills</h2>
+<p class="desc">Tap a person's name to see their quote. Featured display with pill selectors.</p>
+
+<div class="opt5-quote" id="opt5Quote">
+  <p class="quote-text" id="opt5Text">"Ray has been attending to our extensive gardens at Glenhurst Gardens for over 13 years. His personal attention to detail and prompt communication are always appreciated."</p>
+  <span class="author-name" id="opt5Name">Edward Huntley</span>
+  <span class="author-role" id="opt5Role">Chairman, Glenhurst Gardens</span>
+</div>
+<div class="opt5-pills">
+  <div class="opt5-pill active" onclick="showOpt5(0, this)"><div class="avatar">E</div>Edward</div>
+  <div class="opt5-pill" onclick="showOpt5(1, this)"><div class="avatar">K</div>Karen</div>
+  <div class="opt5-pill" onclick="showOpt5(2, this)"><div class="avatar">B</div>Brad</div>
+  <div class="opt5-pill" onclick="showOpt5(3, this)"><div class="avatar">N</div>Nick</div>
+  <div class="opt5-pill" onclick="showOpt5(4, this)"><div class="avatar">S</div>Sue</div>
+</div>
+
+<script>
+var opt5Data = [
+  { text: '"Ray has been attending to our extensive gardens at Glenhurst Gardens for over 13 years. His personal attention to detail and prompt communication are always appreciated."', name: 'Edward Huntley', role: 'Chairman, Glenhurst Gardens' },
+  { text: '"Ray came up with a practical, cost-effective solution which we loved then and still do now, years later. People still walk by and tell us what a beautiful garden we have."', name: 'Karen Hayne', role: 'Homeowner, Mosman' },
+  { text: '"Ray is just an amazing gardener. He\'s been landscaping and maintaining the gardens for all my businesses, homes, and the buildings we now live in. Ray is an artist — every garden is so different."', name: 'Brad Garlick', role: 'Brad Garlick Ford, Ryde' },
+  { text: '"Ray is highly professional, knowledgeable and pays attention to the small things. He is the only landscaper we recommend with confidence."', name: 'Nick Musarevski', role: 'Tazman Constructions' },
+  { text: '"Ray is always proactive with affordable, practical ideas that don\'t bust your budget. I totally trust Ray to give good value."', name: 'Sue Woodward', role: 'Homeowner, Mosman' }
+];
+function showOpt5(i, pill) {
+  document.querySelectorAll('.opt5-pill').forEach(function(p){ p.classList.remove('active'); });
+  pill.classList.add('active');
+  var q = document.getElementById('opt5Quote');
+  q.style.opacity = 0;
+  setTimeout(function(){
+    document.getElementById('opt5Text').textContent = opt5Data[i].text;
+    document.getElementById('opt5Name').textContent = opt5Data[i].name;
+    document.getElementById('opt5Role').textContent = opt5Data[i].role;
+    q.style.opacity = 1;
+  }, 200);
+}
+</script>
+
+<div style="height: 60px;"></div>
+
+</body>
+</html>

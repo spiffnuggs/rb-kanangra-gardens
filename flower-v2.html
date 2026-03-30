@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photorealistic Rose — R.B. Kanangra Gardens</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  .controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+  }
+  .controls button {
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.5);
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s;
+    font-family: system-ui;
+    letter-spacing: 0.5px;
+  }
+  .controls button:hover {
+    background: rgba(180,80,100,0.3);
+    border-color: rgba(180,80,100,0.5);
+    color: #fff;
+  }
+  .overlay {
+    position: fixed;
+    bottom: 32px;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeUp 1.5s ease 4s forwards;
+  }
+  .overlay p {
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: system-ui;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="controls">
+  <button onclick="replayBloom()">Replay</button>
+  <button onclick="toggleAutoRotate()">Rotate</button>
+</div>
+<div class="overlay">
+  <p>R.B. Kanangra Gardens &mdash; Where beauty grows</p>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+
+// ─── Setup ───
+const canvas = document.getElementById('canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 2.2;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0f1a12);
+
+const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 2.8, 4.8);
+camera.lookAt(0, 1.6, 0);
+
+// ─── Post Processing ───
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  0.4, 0.3, 0.9
+);
+composer.addPass(bloomPass);
+
+const bokehPass = new BokehPass(scene, camera, {
+  focus: 4.8,
+  aperture: 0.002,
+  maxblur: 0.008
+});
+composer.addPass(bokehPass);
+
+// ─── Lighting — cinematic macro photography setup ───
+const ambientLight = new THREE.AmbientLight(0xffeef5, 1.0);
+scene.add(ambientLight);
+
+// Hemisphere light — sky/ground color for natural fill
+const hemiLight = new THREE.HemisphereLight(0xffd4e0, 0x2a5a2a, 1.2);
+scene.add(hemiLight);
+
+// Key light — warm golden-rose (like golden hour through a window)
+const keyLight = new THREE.SpotLight(0xffd0b0, 8.0, 25, Math.PI / 4, 0.4, 0.8);
+keyLight.position.set(3, 5, 4);
+keyLight.target.position.set(0, 1.5, 0);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+keyLight.shadow.bias = -0.0001;
+scene.add(keyLight);
+scene.add(keyLight.target);
+
+// Front fill — so petals facing camera aren't black
+const frontFill = new THREE.SpotLight(0xffe0e8, 4.0, 20, Math.PI / 4, 0.6, 1);
+frontFill.position.set(0, 3, 5);
+frontFill.target.position.set(0, 1.5, 0);
+scene.add(frontFill);
+scene.add(frontFill.target);
+
+// Back rim — cool blue for separation
+const rimLight = new THREE.SpotLight(0x80a0dd, 5.0, 15, Math.PI / 5, 0.5, 0.8);
+rimLight.position.set(-3, 4, -3);
+rimLight.target.position.set(0, 1.5, 0);
+scene.add(rimLight);
+scene.add(rimLight.target);
+
+// Under-glow — rose (simulates light bouncing off petals)
+const underGlow = new THREE.PointLight(0xff6090, 2.5, 6);
+underGlow.position.set(0, 0.5, 0.5);
+scene.add(underGlow);
+
+// Side fill — warm from the right
+const sideFill = new THREE.PointLight(0xffc0a0, 2.0, 8);
+sideFill.position.set(3, 2, 1);
+scene.add(sideFill);
+
+// Accent fill — green from below (reflected from leaves)
+const leafBounce = new THREE.PointLight(0x4a8a4a, 0.8, 5);
+leafBounce.position.set(0.5, 0.3, 0.3);
+scene.add(leafBounce);
+
+// ─── Procedural Petal Texture ───
+function createPetalTexture(baseHue, saturation, lightness, veinIntensity) {
+  const size = 512;
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d');
+
+  // Base gradient — darker at base, lighter at tip with natural variation
+  const grad = ctx.createRadialGradient(size * 0.5, size * 0.1, 0, size * 0.5, size * 0.5, size * 0.7);
+  grad.addColorStop(0, `hsl(${baseHue}, ${saturation + 15}%, ${lightness - 15}%)`);
+  grad.addColorStop(0.3, `hsl(${baseHue}, ${saturation + 5}%, ${lightness - 5}%)`);
+  grad.addColorStop(0.6, `hsl(${baseHue}, ${saturation}%, ${lightness}%)`);
+  grad.addColorStop(1, `hsl(${baseHue - 5}, ${saturation - 10}%, ${lightness + 8}%)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+
+  // Organic veins — central vein + branching
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.strokeStyle = `hsla(${baseHue + 10}, ${saturation - 20}%, ${lightness - 25}%, ${veinIntensity})`;
+  ctx.lineWidth = 1.5;
+
+  // Central vein
+  ctx.beginPath();
+  ctx.moveTo(size * 0.5, 0);
+  for (let y = 0; y < size; y += 4) {
+    const wobble = Math.sin(y * 0.02) * 3 + Math.sin(y * 0.05) * 1.5;
+    ctx.lineTo(size * 0.5 + wobble, y);
+  }
+  ctx.stroke();
+
+  // Branching veins
+  ctx.lineWidth = 0.8;
+  for (let i = 0; i < 16; i++) {
+    const startY = size * (0.1 + i * 0.055);
+    const side = i % 2 === 0 ? 1 : -1;
+    const length = size * (0.15 + Math.random() * 0.15);
+    ctx.beginPath();
+    ctx.moveTo(size * 0.5, startY);
+    for (let t = 0; t < 1; t += 0.05) {
+      const x = size * 0.5 + side * t * length;
+      const y = startY + t * length * 0.4 + Math.sin(t * 8) * 2;
+      ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Sub-branches
+    if (Math.random() > 0.4) {
+      ctx.lineWidth = 0.4;
+      const branchY = startY + length * 0.2;
+      const branchX = size * 0.5 + side * length * 0.3;
+      ctx.beginPath();
+      ctx.moveTo(branchX, branchY);
+      ctx.lineTo(branchX + side * length * 0.15, branchY + length * 0.2);
+      ctx.stroke();
+      ctx.lineWidth = 0.8;
+    }
+  }
+
+  // Subtle noise for organic texture
+  ctx.globalCompositeOperation = 'overlay';
+  const imageData = ctx.getImageData(0, 0, size, size);
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    const noise = (Math.random() - 0.5) * 15;
+    imageData.data[i] += noise;
+    imageData.data[i + 1] += noise;
+    imageData.data[i + 2] += noise;
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  // Edge darkening — natural petal edge shadow
+  ctx.globalCompositeOperation = 'multiply';
+  const edgeGrad = ctx.createRadialGradient(size * 0.5, size * 0.4, size * 0.15, size * 0.5, size * 0.4, size * 0.55);
+  edgeGrad.addColorStop(0, 'rgba(255,255,255,1)');
+  edgeGrad.addColorStop(0.7, 'rgba(255,255,255,1)');
+  edgeGrad.addColorStop(1, `hsla(${baseHue}, ${saturation}%, ${lightness - 20}%, 0.3)`);
+  ctx.fillStyle = edgeGrad;
+  ctx.fillRect(0, 0, size, size);
+
+  const texture = new THREE.CanvasTexture(c);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+// ─── Normal map for petal surface detail ───
+function createPetalNormalMap() {
+  const size = 512;
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d');
+
+  // Base normal (flat = 128,128,255)
+  ctx.fillStyle = 'rgb(128,128,255)';
+  ctx.fillRect(0, 0, size, size);
+
+  // Vein bumps
+  ctx.strokeStyle = 'rgb(120,120,255)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(size * 0.5, 0);
+  for (let y = 0; y < size; y += 3) {
+    ctx.lineTo(size * 0.5 + Math.sin(y * 0.02) * 3, y);
+  }
+  ctx.stroke();
+
+  // Subtle surface bumps
+  const imageData = ctx.getImageData(0, 0, size, size);
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    imageData.data[i] += (Math.random() - 0.5) * 6;
+    imageData.data[i + 1] += (Math.random() - 0.5) * 6;
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  return new THREE.CanvasTexture(c);
+}
+
+const petalNormal = createPetalNormalMap();
+
+// ─── Petal Geometry — organic with natural curl and irregularity ───
+function createPetalGeometry(width, height, curlAmount, asymmetry) {
+  const segW = 16, segH = 24;
+  const geo = new THREE.PlaneGeometry(width, height, segW, segH);
+  const pos = geo.attributes.position;
+
+  for (let i = 0; i < pos.count; i++) {
+    let x = pos.getX(i);
+    let y = pos.getY(i);
+    let z = pos.getZ(i);
+
+    const ny = (y / height) + 0.5; // 0 at base, 1 at tip
+    const nx = x / width; // -0.5 to 0.5
+
+    // Petal shape — narrow at base, wide in middle, pointed at tip
+    const widthMod = Math.sin(ny * Math.PI) * 1.0 + 0.2;
+    x *= widthMod;
+
+    // Asymmetry — real petals aren't perfect
+    x += Math.sin(ny * 2.5) * asymmetry * width * 0.08;
+
+    // Main curl — petals curve outward
+    z += ny * ny * curlAmount * height;
+
+    // Side curl — edges curl slightly inward
+    const edgeDist = Math.abs(nx) * 2;
+    z -= edgeDist * edgeDist * height * 0.06 * ny;
+
+    // Subtle wave across the surface
+    z += Math.sin(nx * Math.PI * 3) * 0.008 * ny;
+    z += Math.sin(ny * Math.PI * 2) * 0.005;
+
+    // Natural wrinkle/crease near base
+    if (ny < 0.15) {
+      z += Math.sin(nx * Math.PI * 8) * 0.003 * (1 - ny / 0.15);
+    }
+
+    // Tip thinning — petals get thinner at edges
+    const tipCurl = Math.max(0, ny - 0.7) * 3.33;
+    z += tipCurl * tipCurl * curlAmount * height * 0.3;
+
+    pos.setXYZ(i, x, y, z);
+  }
+
+  geo.computeVertexNormals();
+  return geo;
+}
+
+// ─── Flower Construction ───
+const flowerGroup = new THREE.Group();
+flowerGroup.position.y = 0;
+scene.add(flowerGroup);
+
+// Stem — organic curve with thorns
+const stemPoints = [
+  new THREE.Vector3(0.08, 0, 0.05),
+  new THREE.Vector3(0.06, 0.3, 0.03),
+  new THREE.Vector3(0.02, 0.6, -0.02),
+  new THREE.Vector3(-0.02, 0.9, 0.01),
+  new THREE.Vector3(0.01, 1.2, -0.01),
+  new THREE.Vector3(0, 1.5, 0),
+  new THREE.Vector3(-0.01, 1.8, 0.005),
+  new THREE.Vector3(0, 2.05, 0)
+];
+const stemCurve = new THREE.CatmullRomCurve3(stemPoints);
+const stemGeo = new THREE.TubeGeometry(stemCurve, 32, 0.028, 8, false);
+const stemTex = (() => {
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 256;
+  const ctx = c.getContext('2d');
+  const g = ctx.createLinearGradient(0, 0, 128, 0);
+  g.addColorStop(0, '#1a3a1a');
+  g.addColorStop(0.3, '#2d5a2d');
+  g.addColorStop(0.7, '#2d5a2d');
+  g.addColorStop(1, '#1a3a1a');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 256);
+  // Vertical streaks
+  for (let i = 0; i < 20; i++) {
+    ctx.strokeStyle = `rgba(${20+Math.random()*20}, ${50+Math.random()*30}, ${20+Math.random()*20}, 0.3)`;
+    ctx.lineWidth = 1 + Math.random() * 2;
+    ctx.beginPath();
+    ctx.moveTo(Math.random() * 128, 0);
+    ctx.lineTo(Math.random() * 128, 256);
+    ctx.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+})();
+
+const stemMat = new THREE.MeshStandardMaterial({
+  map: stemTex,
+  roughness: 0.65,
+  metalness: 0.0,
+  normalScale: new THREE.Vector2(0.3, 0.3)
+});
+const stem = new THREE.Mesh(stemGeo, stemMat);
+stem.castShadow = true;
+flowerGroup.add(stem);
+
+// Thorns
+for (let i = 0; i < 4; i++) {
+  const t = 0.15 + i * 0.18;
+  const thornPoint = stemCurve.getPointAt(t);
+  const thornDir = i % 2 === 0 ? 1 : -1;
+  const thornGeo = new THREE.ConeGeometry(0.012, 0.06, 4);
+  const thornMat = new THREE.MeshStandardMaterial({ color: 0x3a2a1a, roughness: 0.6 });
+  const thorn = new THREE.Mesh(thornGeo, thornMat);
+  thorn.position.copy(thornPoint);
+  thorn.position.x += thornDir * 0.03;
+  thorn.rotation.z = thornDir * -1.2;
+  flowerGroup.add(thorn);
+}
+
+// Leaves
+function createRealisticLeaf(size) {
+  const leafTex = (() => {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 256;
+    const ctx = c.getContext('2d');
+    const g = ctx.createLinearGradient(0, 0, 0, 256);
+    g.addColorStop(0, '#2a5a2a');
+    g.addColorStop(0.5, '#3a7a3a');
+    g.addColorStop(1, '#2a5a2a');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 256);
+    // Leaf veins
+    ctx.strokeStyle = 'rgba(20,50,20,0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(128, 0); ctx.lineTo(128, 256);
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 10; i++) {
+      const y = 25 + i * 22;
+      ctx.beginPath();
+      ctx.moveTo(128, y);
+      ctx.quadraticCurveTo(128 + 50 * (i % 2 === 0 ? 1 : -1), y + 15, 128 + 80 * (i % 2 === 0 ? 1 : -1), y + 5);
+      ctx.stroke();
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  })();
+
+  const shape = new THREE.Shape();
+  shape.moveTo(0, 0);
+  shape.bezierCurveTo(size * 0.4, size * 0.1, size * 0.5, size * 0.4, size * 0.45, size * 0.65);
+  shape.bezierCurveTo(size * 0.35, size * 0.9, size * 0.15, size, 0, size);
+  shape.bezierCurveTo(-size * 0.15, size, -size * 0.35, size * 0.9, -size * 0.45, size * 0.65);
+  shape.bezierCurveTo(-size * 0.5, size * 0.4, -size * 0.4, size * 0.1, 0, 0);
+
+  const geo = new THREE.ShapeGeometry(shape, 16);
+  // Bend leaf
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const y = pos.getY(i);
+    const ny = y / size;
+    pos.setZ(i, ny * ny * size * 0.12 + Math.sin(pos.getX(i) / size * Math.PI * 3) * 0.01);
+  }
+  geo.computeVertexNormals();
+
+  return new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
+    map: leafTex,
+    roughness: 0.45,
+    metalness: 0.0,
+    side: THREE.DoubleSide,
+    transmission: 0.08,
+    thickness: 0.3
+  }));
+}
+
+const leaves = [];
+[
+  { size: 0.45, pos: [0.04, 0.5, 0.02], rotZ: -0.9, rotY: 0.4 },
+  { size: 0.4, pos: [-0.03, 0.8, -0.01], rotZ: 0.8, rotY: -0.5 },
+  { size: 0.3, pos: [0.02, 1.15, 0.01], rotZ: -0.7, rotY: 0.3 }
+].forEach(cfg => {
+  const leaf = createRealisticLeaf(cfg.size);
+  leaf.position.set(...cfg.pos);
+  leaf.rotation.z = cfg.rotZ;
+  leaf.rotation.y = cfg.rotY;
+  leaf.castShadow = true;
+  flowerGroup.add(leaf);
+  leaves.push(leaf);
+});
+
+// Sepals (green petal-like parts at base of flower)
+const sepalGroup = new THREE.Group();
+sepalGroup.position.y = 2.0;
+flowerGroup.add(sepalGroup);
+
+for (let i = 0; i < 5; i++) {
+  const angle = (i / 5) * Math.PI * 2;
+  const sepalGeo = createPetalGeometry(0.12, 0.35, 0.3, 0);
+  const sepalMat = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color(0x2a5a2a),
+    roughness: 0.5,
+    metalness: 0.0,
+    side: THREE.DoubleSide,
+    transmission: 0.05,
+    thickness: 0.5
+  });
+  const sepal = new THREE.Mesh(sepalGeo, sepalMat);
+  const pivot = new THREE.Group();
+  pivot.position.set(Math.cos(angle) * 0.08, -0.12, Math.sin(angle) * 0.08);
+  pivot.rotation.y = -angle + Math.PI / 2;
+  sepal.rotation.x = -0.3;
+  pivot.add(sepal);
+  sepalGroup.add(pivot);
+}
+
+// ─── Rose Petals — 5 layers, photorealistic ───
+const flowerHead = new THREE.Group();
+flowerHead.position.y = 2.05;
+flowerGroup.add(flowerHead);
+
+const petalConfigs = [
+  { count: 4, radius: 0.04, width: 0.14, height: 0.28, curl: 0.15, hue: 348, sat: 55, light: 55, vein: 0.25, angleOff: 0 },
+  { count: 5, radius: 0.08, width: 0.18, height: 0.35, curl: 0.2, hue: 350, sat: 50, light: 60, vein: 0.2, angleOff: 0.6 },
+  { count: 6, radius: 0.14, width: 0.22, height: 0.42, curl: 0.28, hue: 352, sat: 48, light: 65, vein: 0.18, angleOff: 0.3 },
+  { count: 7, radius: 0.2, width: 0.26, height: 0.48, curl: 0.38, hue: 354, sat: 45, light: 70, vein: 0.15, angleOff: 0.8 },
+  { count: 8, radius: 0.28, width: 0.3, height: 0.52, curl: 0.5, hue: 356, sat: 42, light: 75, vein: 0.12, angleOff: 0.15 }
+];
+
+const petals = [];
+
+petalConfigs.forEach((cfg, li) => {
+  for (let pi = 0; pi < cfg.count; pi++) {
+    const angle = (pi / cfg.count) * Math.PI * 2 + cfg.angleOff;
+    const asymmetry = (Math.random() - 0.5) * 2;
+
+    const geo = createPetalGeometry(
+      cfg.width * (0.9 + Math.random() * 0.2),
+      cfg.height * (0.9 + Math.random() * 0.2),
+      cfg.curl * (0.8 + Math.random() * 0.4),
+      asymmetry
+    );
+
+    const hueJitter = (Math.random() - 0.5) * 6;
+    const satJitter = (Math.random() - 0.5) * 8;
+    const lightJitter = (Math.random() - 0.5) * 6;
+
+    const tex = createPetalTexture(
+      cfg.hue + hueJitter,
+      cfg.sat + satJitter,
+      cfg.light + lightJitter,
+      cfg.vein + Math.random() * 0.08
+    );
+
+    const mat = new THREE.MeshPhysicalMaterial({
+      map: tex,
+      normalMap: petalNormal,
+      normalScale: new THREE.Vector2(0.15, 0.15),
+      roughness: 0.4 + Math.random() * 0.1,
+      metalness: 0.0,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.97,
+      // Subsurface scattering — light passes through petals
+      transmission: 0.15 + li * 0.04,
+      thickness: 0.3 + li * 0.1,
+      ior: 1.45,
+      // Sheen for that silky petal look
+      sheen: 0.3,
+      sheenRoughness: 0.4,
+      sheenColor: new THREE.Color(`hsl(${cfg.hue}, ${cfg.sat + 20}%, ${cfg.light + 15}%)`)
+    });
+
+    const petal = new THREE.Mesh(geo, mat);
+    petal.castShadow = true;
+    petal.receiveShadow = true;
+
+    const pivot = new THREE.Group();
+    pivot.position.set(
+      Math.cos(angle) * cfg.radius,
+      -li * 0.015,
+      Math.sin(angle) * cfg.radius
+    );
+    pivot.rotation.y = -angle + Math.PI / 2;
+
+    // Start CLOSED — pointing straight up
+    petal.rotation.x = -Math.PI * 0.48;
+    pivot.add(petal);
+    flowerHead.add(pivot);
+
+    const delay = li * 0.15 + (pi / cfg.count) * 0.08 + Math.random() * 0.05;
+    const targetOpen = -Math.PI * 0.48 + (0.5 + li * 0.22 + Math.random() * 0.12);
+
+    petals.push({
+      mesh: petal,
+      pivot,
+      layer: li,
+      closedRotation: -Math.PI * 0.48,
+      openRotation: targetOpen,
+      delay,
+      wobblePhase: Math.random() * Math.PI * 2,
+      wobbleSpeed: 0.2 + Math.random() * 0.3,
+      wobbleAmount: 0.008 + Math.random() * 0.008
+    });
+  }
+});
+
+// Center — pistil cluster
+const pistilGroup = new THREE.Group();
+pistilGroup.position.y = 0.08;
+flowerHead.add(pistilGroup);
+
+for (let i = 0; i < 24; i++) {
+  const a = (i / 24) * Math.PI * 2 + Math.random() * 0.3;
+  const r = 0.02 + Math.random() * 0.04;
+  const h = 0.02 + Math.random() * 0.03;
+  const sGeo = new THREE.SphereGeometry(0.008 + Math.random() * 0.006, 6, 6);
+  const sMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color().setHSL(0.12 + Math.random() * 0.05, 0.8, 0.45 + Math.random() * 0.15),
+    roughness: 0.3,
+    metalness: 0.1,
+    emissive: new THREE.Color(0x604000),
+    emissiveIntensity: 0.3
+  });
+  const s = new THREE.Mesh(sGeo, sMat);
+  s.position.set(Math.cos(a) * r, h, Math.sin(a) * r);
+  pistilGroup.add(s);
+}
+pistilGroup.scale.set(0, 0, 0);
+
+// ─── Dew drops ───
+const dewDrops = [];
+for (let i = 0; i < 12; i++) {
+  const dewSize = 0.006 + Math.random() * 0.008;
+  const dewGeo = new THREE.SphereGeometry(dewSize, 12, 12);
+  // Make bottom slightly flat
+  const dPos = dewGeo.attributes.position;
+  for (let j = 0; j < dPos.count; j++) {
+    if (dPos.getY(j) < -dewSize * 0.3) {
+      dPos.setY(j, -dewSize * 0.3);
+    }
+  }
+  dewGeo.computeVertexNormals();
+
+  const dewMat = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    roughness: 0.0,
+    metalness: 0.0,
+    transmission: 0.95,
+    thickness: 1.0,
+    ior: 1.33,
+    transparent: true,
+    opacity: 0.85,
+    envMapIntensity: 2.0
+  });
+  const dew = new THREE.Mesh(dewGeo, dewMat);
+  dew.scale.set(0, 0, 0);
+
+  const petalIdx = Math.floor(Math.random() * petals.length);
+  const p = petals[petalIdx];
+  const localPos = new THREE.Vector3(
+    (Math.random() - 0.5) * 0.08,
+    Math.random() * 0.15 + 0.05,
+    0.005
+  );
+
+  p.mesh.add(dew);
+  dew.position.copy(localPos);
+  dewDrops.push({ mesh: dew, appearAt: 0.65 + Math.random() * 0.25 });
+}
+
+// ─── Floating particles — pollen motes ───
+const moteCount = 40;
+const moteGeo = new THREE.BufferGeometry();
+const motePos = new Float32Array(moteCount * 3);
+const moteSpeeds = [];
+for (let i = 0; i < moteCount; i++) {
+  motePos[i * 3] = (Math.random() - 0.5) * 5;
+  motePos[i * 3 + 1] = Math.random() * 4;
+  motePos[i * 3 + 2] = (Math.random() - 0.5) * 5;
+  moteSpeeds.push({
+    drift: new THREE.Vector3(
+      (Math.random() - 0.5) * 0.002,
+      0.001 + Math.random() * 0.003,
+      (Math.random() - 0.5) * 0.002
+    ),
+    phase: Math.random() * Math.PI * 2
+  });
+}
+moteGeo.setAttribute('position', new THREE.BufferAttribute(motePos, 3));
+const moteMat = new THREE.PointsMaterial({
+  color: 0xf0d080,
+  size: 0.025,
+  transparent: true,
+  opacity: 0.35,
+  blending: THREE.AdditiveBlending
+});
+scene.add(new THREE.Points(moteGeo, moteMat));
+
+// ─── Ground ───
+const groundGeo = new THREE.PlaneGeometry(10, 10);
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x080f08,
+  roughness: 0.95
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -0.01;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ─── Animation ───
+let bloomProgress = 0;
+const bloomDuration = 6.0;
+let isComplete = false;
+const clock = new THREE.Clock();
+let mouseX = 0, mouseY = 0;
+let autoRotate = false;
+
+document.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+  mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+function easeOutExpo(t) {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
+
+window.replayBloom = () => {
+  bloomProgress = 0;
+  isComplete = false;
+  clock.start();
+  petals.forEach(p => { p.mesh.rotation.x = p.closedRotation; });
+  pistilGroup.scale.set(0, 0, 0);
+  dewDrops.forEach(d => { d.mesh.scale.set(0, 0, 0); });
+};
+
+window.toggleAutoRotate = () => { autoRotate = !autoRotate; };
+
+function animate() {
+  requestAnimationFrame(animate);
+  const delta = clock.getDelta();
+  const elapsed = clock.getElapsedTime();
+
+  if (!isComplete) {
+    bloomProgress = Math.min(1, bloomProgress + delta / bloomDuration);
+    if (bloomProgress >= 1) isComplete = true;
+  }
+
+  // Petals
+  petals.forEach(p => {
+    let t = Math.max(0, Math.min(1, (bloomProgress - p.delay) / (0.7 - p.delay * 0.3)));
+    t = easeOutExpo(t);
+    let rot = p.closedRotation + (p.openRotation - p.closedRotation) * t;
+
+    // Breathing
+    if (isComplete) {
+      rot += Math.sin(elapsed * p.wobbleSpeed + p.wobblePhase) * p.wobbleAmount;
+    }
+    p.mesh.rotation.x = rot;
+  });
+
+  // Pistil
+  const pistilT = easeOutExpo(Math.max(0, Math.min(1, (bloomProgress - 0.5) / 0.3)));
+  pistilGroup.scale.setScalar(pistilT);
+
+  // Dew drops
+  dewDrops.forEach(d => {
+    if (bloomProgress > d.appearAt) {
+      const dt = Math.min(1, (bloomProgress - d.appearAt) / 0.15);
+      const s = easeOutExpo(dt);
+      d.mesh.scale.setScalar(s);
+    }
+  });
+
+  // Particles
+  const mp = moteGeo.attributes.position;
+  for (let i = 0; i < moteCount; i++) {
+    const s = moteSpeeds[i];
+    mp.setX(i, mp.getX(i) + Math.sin(elapsed * 0.3 + s.phase) * s.drift.x);
+    mp.setY(i, mp.getY(i) + s.drift.y * 0.4);
+    mp.setZ(i, mp.getZ(i) + Math.cos(elapsed * 0.2 + s.phase) * s.drift.z);
+    if (mp.getY(i) > 5) {
+      mp.setY(i, 0);
+      mp.setX(i, (Math.random() - 0.5) * 5);
+      mp.setZ(i, (Math.random() - 0.5) * 5);
+    }
+  }
+  mp.needsUpdate = true;
+
+  // Leaves gentle sway
+  leaves.forEach((leaf, i) => {
+    leaf.rotation.z += Math.sin(elapsed * 0.4 + i * 2) * 0.0003;
+  });
+
+  // Flower subtle breathing
+  flowerHead.rotation.y = Math.sin(elapsed * 0.1) * 0.03;
+  flowerHead.rotation.z = Math.cos(elapsed * 0.08) * 0.015;
+  flowerHead.position.y = 2.05 + Math.sin(elapsed * 0.15) * 0.003;
+
+  // Camera
+  if (autoRotate) {
+    camera.position.x = Math.sin(elapsed * 0.15) * 4.8;
+    camera.position.z = Math.cos(elapsed * 0.15) * 4.8;
+  } else {
+    camera.position.x += (mouseX * 1.2 - camera.position.x) * 0.015;
+  }
+  camera.position.y += (2.8 + mouseY * -0.4 - camera.position.y) * 0.015;
+  camera.lookAt(0, 1.7, 0);
+
+  // Light breathing
+  keyLight.intensity = 8.0 + Math.sin(elapsed * 0.3) * 0.5;
+  underGlow.intensity = 2.5 + Math.sin(elapsed * 0.5) * 0.3;
+
+  composer.render();
+}
+
+animate();
+</script>
+</body>
+</html>

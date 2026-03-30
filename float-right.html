@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floating Cards — Right Side</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FBF7F8;
+  --bg-alt: #F3ECF0;
+  --surface: #FFFFFF;
+  --text: #1C2A42;
+  --text-secondary: #2D4060;
+  --text-muted: #647A94;
+  --text-ghost: #94A3B6;
+  --accent: #B4627E;
+  --accent-light: #CC8A9E;
+  --accent-dim: rgba(180, 98, 126, 0.07);
+  --border: #E4D8DE;
+  --divider: #ECE2E7;
+  --green: #6A9B7E;
+  --highlight: #8DB4CC;
+  --font-display: 'Libre Baskerville', serif;
+  --font-body: 'Inter', sans-serif;
+  --radius-lg: 22px;
+  --shadow-card: 0 20px 60px rgba(28, 42, 66, 0.12), 0 4px 16px rgba(28, 42, 66, 0.06);
+  --shadow-card-hover: 0 32px 80px rgba(28, 42, 66, 0.18), 0 8px 24px rgba(28, 42, 66, 0.08);
+  --shadow-glow: 0 8px 40px rgba(180, 98, 126, 0.15);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+
+/* ============================================================
+   SPLIT LAYOUT — Text left, floating flip cards right
+   ============================================================ */
+.section {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 120px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* --- Left: Text --- */
+.text-side {
+  padding: 20px 0;
+}
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display: block;
+}
+.text-side h2 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.5vw, 40px);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+.text-side h2 em { font-style: italic; color: var(--accent); }
+.text-side p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+.sig {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.sig strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text);
+  display: block;
+}
+.sig span {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* --- Right: Floating flip cards --- */
+.cards-side {
+  position: relative;
+  height: 600px;
+}
+
+/* Each wrapper holds the 3D flip context */
+.flip-wrapper {
+  position: absolute;
+  perspective: 1000px;
+  cursor: pointer;
+}
+.flip-wrapper:hover {
+  z-index: 20 !important;
+}
+
+.flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(0.25, 0.46, 0.35, 1.0);
+}
+
+/* The gentle angelic flip — slow, floaty, with a slight lift */
+.flip-wrapper:hover .flip-card {
+  transform: rotateY(180deg) translateY(-6px);
+}
+
+.flip-front,
+.flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Front — photo */
+.flip-front {
+  z-index: 2;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 1s ease;
+}
+.flip-wrapper:hover .flip-front {
+  box-shadow: var(--shadow-card-hover);
+}
+.flip-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Back — story */
+.flip-back {
+  transform: rotateY(180deg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card-hover);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px;
+  border: 1px solid var(--divider);
+}
+.flip-back-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.flip-back h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.flip-back h3 em { font-style: italic; color: var(--accent); }
+.flip-back p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.flip-year {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--divider);
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text-ghost);
+  font-style: italic;
+}
+
+/* --- Card positions (same scattered layout) --- */
+.fc-1 {
+  width: 52%;
+  height: 360px;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+.fc-2 {
+  width: 44%;
+  height: 280px;
+  top: 30px;
+  right: 0;
+  z-index: 2;
+}
+.fc-3 {
+  width: 36%;
+  height: 240px;
+  top: 260px;
+  left: 30%;
+  z-index: 4;
+}
+/* Accent border on the center card front */
+.fc-3 .flip-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--accent);
+  border-radius: var(--radius-lg);
+  opacity: 0.45;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+.fc-3:hover .flip-front::after { opacity: 0; }
+
+.fc-4 {
+  width: 38%;
+  height: 250px;
+  bottom: 0;
+  left: 3%;
+  z-index: 1;
+}
+.fc-5 {
+  width: 40%;
+  height: 240px;
+  bottom: 10px;
+  right: 2%;
+  z-index: 2;
+}
+
+/* --- Tap to flip on touch devices --- */
+.flip-wrapper.flipped .flip-card {
+  transform: rotateY(180deg) translateY(-6px);
+}
+.flip-wrapper.flipped .flip-front {
+  box-shadow: var(--shadow-card-hover);
+}
+.flip-wrapper.flipped .flip-front::after {
+  opacity: 0 !important;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .section { gap: 40px; }
+  .fc-1 { width: 54%; height: 300px; }
+  .fc-2 { width: 46%; height: 240px; }
+  .fc-3 { width: 38%; height: 210px; top: 220px; }
+  .fc-4 { width: 40%; height: 220px; }
+  .fc-5 { width: 42%; height: 210px; }
+  .cards-side { height: 520px; }
+}
+
+@media (max-width: 768px) {
+  .section {
+    grid-template-columns: 1fr;
+    padding: 60px 24px 40px;
+    min-height: auto;
+    gap: 32px;
+  }
+  .text-side { padding: 0; }
+  .text-side h2 { font-size: 26px; margin-bottom: 16px; }
+  .text-side p { font-size: 14px; margin-bottom: 12px; }
+  .sig { margin-top: 24px; padding-top: 16px; }
+
+  /* Horizontal swipe carousel */
+  .cards-side {
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 0 20px;
+    margin: 0 -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    scrollbar-width: none;
+  }
+  .cards-side::-webkit-scrollbar { display: none; }
+
+  .flip-wrapper {
+    position: relative !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    height: 320px !important;
+    top: auto !important; bottom: auto !important;
+    left: auto !important; right: auto !important;
+    scroll-snap-align: center;
+    flex-shrink: 0;
+  }
+
+  /* Tap hint */
+  .cards-side::after {
+    content: 'swipe \2192  tap to flip';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-ghost);
+    white-space: nowrap;
+  }
+  .section { position: relative; }
+
+  .fc-3 .flip-front::after { display: none; }
+  .flip-back { padding: 22px; }
+  .flip-back h3 { font-size: 16px; }
+  .flip-back p { font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  .section { padding: 48px 20px 36px; }
+  .cards-side {
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .flip-wrapper {
+    width: 230px !important;
+    min-width: 230px !important;
+    height: 290px !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="text-side">
+    <span class="label">The Person Behind the Garden</span>
+    <h2>I don't just build gardens. I <em>listen</em> to them.</h2>
+    <p>Since 1990, I've helped Sydney's most discerning property owners and body corporates turn their vision into living art. Our clients don't find us through flashy ads. They find us through trust &mdash; referrals from people who've watched us care for their gardens for 10, 15, even 25 years.</p>
+    <p>We're a team of 9 &mdash; close-knit, experienced, and genuinely passionate about what grows.</p>
+    <div class="sig">
+      <strong>Ray Basha</strong>
+      <span>Founder &middot; Since 1990</span>
+    </div>
+  </div>
+
+  <div class="cards-side">
+
+    <!-- Card 1 — Waterfront Estate -->
+    <div class="flip-wrapper fc-1">
+      <div class="flip-card">
+        <div class="flip-front">
+          <img src="images/IMG_4039.jpg" alt="Aerial waterfront estate">
+        </div>
+        <div class="flip-back">
+          <span class="flip-back-label">Featured Project</span>
+          <h3>Where the Garden Meets the <em>Harbour</em></h3>
+          <p>Two decades of care. What started as a blank canvas is now a living masterpiece that flows from the house down to the water's edge.</p>
+          <div class="flip-year">Under our care since 2003</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 — Tropical Path -->
+    <div class="flip-wrapper fc-2">
+      <div class="flip-card">
+        <div class="flip-front">
+          <img src="images/IMG_7607.jpg" alt="Tropical garden path">
+        </div>
+        <div class="flip-back">
+          <span class="flip-back-label">Private Garden</span>
+          <h3>A Path Through <em>Paradise</em></h3>
+          <p>Dense tropical planting transforms a suburban block into another world. Every step reveals a new layer of ferns, palms, and light.</p>
+          <div class="flip-year">Under our care since 2008</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 — Flower Detail (accent border) -->
+    <div class="flip-wrapper fc-3">
+      <div class="flip-card">
+        <div class="flip-front">
+          <img src="images/IMG_8460.jpeg" alt="Red flower close-up">
+        </div>
+        <div class="flip-back">
+          <span class="flip-back-label">The Details</span>
+          <h3>It's Always in the <em>Details</em></h3>
+          <p>Ray chooses every plant by hand. Colour, texture, seasonal timing &mdash; nothing is left to chance.</p>
+          <div class="flip-year">A philosophy, not a project</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 — Cliffside -->
+    <div class="flip-wrapper fc-4">
+      <div class="flip-card">
+        <div class="flip-front">
+          <img src="images/IMG_6729.jpg" alt="Cliffside garden">
+        </div>
+        <div class="flip-back">
+          <span class="flip-back-label">Transformation</span>
+          <h3>From Bare Cliff to <em>Living Edge</em></h3>
+          <p>Salt, wind, exposure &mdash; this site fought back. With the right species and years of patience, it became one of Sydney's most dramatic borders.</p>
+          <div class="flip-year">Under our care since 2011</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 — Azalea -->
+    <div class="flip-wrapper fc-5">
+      <div class="flip-card">
+        <div class="flip-front">
+          <img src="images/IMG_3825.jpeg" alt="Pink azalea cascade">
+        </div>
+        <div class="flip-back">
+          <span class="flip-back-label">Seasonal Colour</span>
+          <h3>Spring <em>Azaleas</em></h3>
+          <p>Every garden should have a moment that stops you. This cascade of pink does exactly that &mdash; every September, for fifteen years running.</p>
+          <div class="flip-year">Under our care since 2010</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  // Tap to flip on touch — tap once to flip, tap again to unflip
+  // On desktop, hover still works via CSS
+  var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  if (isTouchDevice) {
+    document.querySelectorAll('.flip-wrapper').forEach(function(wrapper) {
+      wrapper.addEventListener('click', function(e) {
+        e.stopPropagation();
+        // Close any other open cards first
+        document.querySelectorAll('.flip-wrapper.flipped').forEach(function(other) {
+          if (other !== wrapper) other.classList.remove('flipped');
+        });
+        wrapper.classList.toggle('flipped');
+      });
+    });
+
+    // Tap outside to close
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.flip-wrapper.flipped').forEach(function(w) {
+        w.classList.remove('flipped');
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

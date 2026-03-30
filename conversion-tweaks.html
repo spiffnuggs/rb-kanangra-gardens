@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversion Tweaks — Side by Side</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FBF7F8;
+  --bg-alt: #F3ECF0;
+  --surface: #FFFFFF;
+  --text: #1C2A42;
+  --text-secondary: #2D4060;
+  --text-muted: #647A94;
+  --text-ghost: #94A3B6;
+  --accent: #B4627E;
+  --accent-light: #CC8A9E;
+  --accent-dim: rgba(180, 98, 126, 0.07);
+  --green: #6A9B7E;
+  --highlight: #8DB4CC;
+  --border: #E4D8DE;
+  --divider: #ECE2E7;
+  --font-display: 'Libre Baskerville', serif;
+  --font-body: 'Inter', sans-serif;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 50px;
+  --shadow-sm: 0 2px 8px rgba(28, 42, 66, 0.04);
+  --shadow-md: 0 8px 28px rgba(28, 42, 66, 0.06);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); }
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+
+/* Page header */
+.page-header {
+  text-align: center;
+  padding: 60px 24px 20px;
+}
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.page-header p { font-size: 14px; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+/* Tweak sections */
+.tweak {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+  border-top: 1px solid var(--divider);
+}
+.tweak-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.tweak-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 14px; flex-shrink: 0;
+}
+.tweak-title {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 400; color: var(--text);
+}
+.tweak-title em { font-style: italic; color: var(--accent); }
+.tweak-desc {
+  font-size: 13px; color: var(--text-muted); margin-top: 4px;
+}
+.tweak-impact {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px;
+  margin-top: 6px;
+}
+.impact-high { background: rgba(106,155,126,0.12); color: var(--green); }
+.impact-med { background: rgba(180,98,126,0.1); color: var(--accent); }
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.compare-side {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.compare-tag {
+  padding: 10px 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.tag-before { background: var(--bg-alt); color: var(--text-ghost); }
+.tag-after { background: var(--green); color: #fff; }
+.compare-content {
+  padding: 0;
+}
+
+/* ============================================================
+   TWEAK 1 — HERO: Add phone + directness
+   ============================================================ */
+.hero-before {
+  position: relative;
+  height: 360px;
+  background: #0a1a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-before img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0.4;
+}
+.hero-before-text {
+  position: relative; z-index: 2; padding: 24px;
+}
+.hero-before-text p.eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--highlight); margin-bottom: 12px;
+}
+.hero-before-text h2 {
+  font-family: var(--font-display); font-size: 28px; font-weight: 400;
+  color: #fff; line-height: 1.15; margin-bottom: 12px;
+}
+.hero-before-text h2 em { font-style: italic; color: var(--highlight); }
+.hero-before-text p.sub {
+  font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;
+}
+.hero-btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-s {
+  padding: 12px 24px; border-radius: var(--radius-pill);
+  font-size: 13px; font-weight: 600; transition: all 0.3s;
+}
+.btn-pink { background: var(--accent); color: #fff; }
+.btn-ghost { border: 1.5px solid rgba(255,255,255,0.4); color: #fff; }
+
+/* After hero */
+.hero-after {
+  position: relative;
+  height: 360px;
+  background: #0a1a0a;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.hero-after img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0.5;
+}
+.hero-after-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(10,26,10,0.8) 100%);
+}
+.hero-after-text {
+  position: relative; z-index: 2; padding: 28px; max-width: 500px;
+}
+.hero-after-text p.eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--accent-light); margin-bottom: 10px;
+}
+.hero-after-text h2 {
+  font-family: var(--font-display); font-size: 26px; font-weight: 400;
+  color: #fff; line-height: 1.15; margin-bottom: 8px;
+}
+.hero-after-text h2 em { font-style: italic; color: var(--highlight); }
+.hero-after-text p.sub {
+  font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 16px;
+}
+.hero-phone {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-size: 18px; color: #fff;
+  margin-bottom: 16px;
+}
+.hero-phone svg {
+  width: 18px; height: 18px; stroke: var(--accent-light);
+  fill: none; stroke-width: 1.5;
+}
+
+/* ============================================================
+   TWEAK 2 — TRUST BAR: More direct language
+   ============================================================ */
+.trust-demo {
+  padding: 20px 24px;
+  background: var(--surface);
+}
+.trust-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 28px; flex-wrap: wrap;
+}
+.trust-chip {
+  display: flex; align-items: center; gap: 8px;
+}
+.trust-chip strong {
+  font-family: var(--font-display); font-size: 16px; color: var(--text);
+}
+.trust-chip span { font-size: 11px; color: var(--text-muted); }
+.trust-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+
+/* After version — bolder */
+.trust-after {
+  padding: 20px 24px;
+  background: var(--surface);
+  text-align: center;
+}
+.trust-after-line {
+  font-size: 14px; color: var(--text-secondary); line-height: 1.7;
+}
+.trust-after-line strong {
+  color: var(--text); font-weight: 600;
+}
+.trust-after-line em {
+  color: var(--accent); font-style: normal; font-weight: 600;
+}
+
+/* ============================================================
+   TWEAK 3 — TESTIMONIALS: Visible without interaction
+   ============================================================ */
+.test-before {
+  padding: 24px;
+  background: var(--bg);
+}
+.test-card-mini {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+.test-card-mini .placeholder-bar {
+  height: 100px; background: var(--bg-alt); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-ghost); font-size: 11px; margin-bottom: 12px;
+}
+.test-card-mini .tap-hint {
+  font-size: 10px; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 1px;
+}
+
+.test-after {
+  padding: 24px;
+  background: var(--bg);
+}
+.test-quote-clean {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 12px;
+}
+.test-quote-clean blockquote {
+  font-family: var(--font-display);
+  font-size: 15px; font-style: italic; font-weight: 400;
+  color: var(--text-secondary); line-height: 1.65;
+  margin-bottom: 16px;
+}
+.test-author-clean {
+  display: flex; align-items: center; gap: 10px;
+  padding-top: 12px; border-top: 1px solid var(--divider);
+}
+.test-avatar-clean {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-dim), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 12px;
+}
+.test-author-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.test-author-role { font-size: 11px; color: var(--text-ghost); }
+.test-more-link {
+  font-size: 12px; color: var(--accent); font-weight: 600;
+  cursor: pointer; margin-top: 4px;
+}
+
+/* ============================================================
+   TWEAK 4 — STICKY PHONE BAR (mobile)
+   ============================================================ */
+.phone-demo-wrapper {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+.phone-demo-bg {
+  padding: 24px;
+  background: var(--bg);
+  height: 100%;
+}
+.phone-demo-bg p {
+  font-size: 13px; color: var(--text-muted); line-height: 1.8;
+}
+.sticky-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: var(--accent);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 -4px 20px rgba(180,98,126,0.25);
+}
+.sticky-bar svg {
+  width: 18px; height: 18px;
+  stroke: #fff; fill: none; stroke-width: 2;
+}
+.sticky-bar span {
+  color: #fff; font-weight: 700; font-size: 14px; letter-spacing: 0.5px;
+}
+.no-sticky p {
+  color: var(--text-ghost); font-size: 12px; text-align: center; padding-top: 120px;
+}
+
+/* ============================================================
+   TWEAK 5 — SERVICES: What they actually get
+   ============================================================ */
+.svc-before {
+  padding: 24px;
+  background: var(--bg);
+}
+.svc-card-mini {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 8px;
+}
+.svc-card-mini h4 {
+  font-family: var(--font-display); font-size: 16px; font-weight: 400;
+  color: var(--text); margin-bottom: 4px;
+}
+.svc-card-mini p {
+  font-size: 12px; color: var(--text-muted); line-height: 1.5;
+}
+
+.svc-after {
+  padding: 24px;
+  background: var(--bg);
+}
+.svc-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--divider);
+}
+.svc-row:first-child { border-top: 1px solid var(--divider); }
+.svc-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(106,155,126,0.12);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.svc-check svg {
+  width: 12px; height: 12px; stroke: var(--green);
+  fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+}
+.svc-row h4 {
+  font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px;
+}
+.svc-row p {
+  font-size: 12px; color: var(--text-muted); line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .compare { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>5 Small Changes, Big Impact</h1>
+  <p>Same beautiful site. Same Petal & Sky palette. These are surgical tweaks that make the site work harder for Ray without losing any of your design.</p>
+</div>
+
+<!-- ============================================================
+     TWEAK 1 — Hero directness + phone number
+     ============================================================ -->
+<div class="tweak">
+  <div class="tweak-label">
+    <div class="tweak-num">1</div>
+    <div>
+      <div class="tweak-title">Hero: Lead with <em>What Ray Does</em></div>
+      <div class="tweak-desc">Move text left, add phone number above the fold, make the CTA about them not us.</div>
+      <span class="tweak-impact impact-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="compare">
+    <div class="compare-side">
+      <div class="compare-tag tag-before">CURRENT</div>
+      <div class="compare-content">
+        <div class="hero-before">
+          <img src="images/IMG_4039.jpg" alt="">
+          <div class="hero-before-text">
+            <p class="eyebrow">Sydney's Trusted Garden Stewards &mdash; Est. 1990</p>
+            <h2>Gardens that <em>Mature</em>. Relationships that Last.</h2>
+            <p class="sub">35 years of horticultural stewardship for Sydney's finest estates and corporate landscapes.</p>
+            <div class="hero-btn-row">
+              <span class="btn-s btn-pink">Request a Site Consultation</span>
+              <span class="btn-s btn-ghost">View Our Gardens</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-side">
+      <div class="compare-tag tag-after">SUGGESTED</div>
+      <div class="compare-content">
+        <div class="hero-after">
+          <img src="images/IMG_4039.jpg" alt="">
+          <div class="hero-after-overlay"></div>
+          <div class="hero-after-text">
+            <p class="eyebrow">Sydney Garden Maintenance &mdash; Est. 1990</p>
+            <h2>Your Garden, <em>Genuinely</em> Cared For.</h2>
+            <p class="sub">Body corporate, strata, and private garden maintenance from a team of 9 who've been doing this for 35 years.</p>
+            <div class="hero-phone">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.98.37 1.94.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.87.33 1.83.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              0417 473 273
+            </div>
+            <div class="hero-btn-row">
+              <span class="btn-s btn-pink">Get a Free Quote</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TWEAK 2 — Trust bar: Say what they need to hear
+     ============================================================ -->
+<div class="tweak">
+  <div class="tweak-label">
+    <div class="tweak-num">2</div>
+    <div>
+      <div class="tweak-title">Trust Bar: Say It <em>Plainly</em></div>
+      <div class="tweak-desc">Replace abstract stats with a sentence a committee chair actually cares about.</div>
+      <span class="tweak-impact impact-med">MEDIUM IMPACT</span>
+    </div>
+  </div>
+  <div class="compare">
+    <div class="compare-side">
+      <div class="compare-tag tag-before">CURRENT</div>
+      <div class="compare-content">
+        <div class="trust-demo">
+          <div class="trust-row">
+            <div class="trust-chip"><strong>35 Years</strong><span>Of trusted expertise</span></div>
+            <div class="trust-dot"></div>
+            <div class="trust-chip"><strong>Team of 9</strong><span>Dedicated professionals</span></div>
+            <div class="trust-dot"></div>
+            <div class="trust-chip"><strong>20+ Years</strong><span>Longest relationships</span></div>
+            <div class="trust-dot"></div>
+            <div class="trust-chip"><strong>Body Corp</strong><span>Specialists</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-side">
+      <div class="compare-tag tag-after">SUGGESTED</div>
+      <div class="compare-content">
+        <div class="trust-after">
+          <p class="trust-after-line"><strong>35 years</strong> in business. A dedicated <strong>team of 9</strong>. Sydney's go-to for <em>body corporate</em> and strata garden maintenance. Our longest client? <strong>25 years and counting.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TWEAK 3 — Testimonials: Don't hide the proof
+     ============================================================ -->
+<div class="tweak">
+  <div class="tweak-label">
+    <div class="tweak-num">3</div>
+    <div>
+      <div class="tweak-title">Testimonials: Don't <em>Hide</em> the Proof</div>
+      <div class="tweak-desc">Show the best quote immediately. "Tap to read more" means most people won't. Lead with the punch line.</div>
+      <span class="tweak-impact impact-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="compare">
+    <div class="compare-side">
+      <div class="compare-tag tag-before">CURRENT</div>
+      <div class="compare-content">
+        <div class="test-before">
+          <div class="test-card-mini">
+            <div class="placeholder-bar">Photo: Ray with Margaret</div>
+            <p style="font-size:13px;color:var(--text-secondary);font-style:italic;margin-bottom:8px;">&ldquo;Ray's team has maintained our building's grounds for over 15 years...&rdquo;</p>
+            <p class="tap-hint">TAP TO READ MORE &darr;</p>
+          </div>
+          <p style="font-size:11px;color:var(--text-ghost);text-align:center;">Hidden behind placeholder photo + expand interaction</p>
+        </div>
+      </div>
+    </div>
+    <div class="compare-side">
+      <div class="compare-tag tag-after">SUGGESTED</div>
+      <div class="compare-content">
+        <div class="test-after">
+          <div class="test-quote-clean">
+            <blockquote>&ldquo;Ray's team has maintained our building's grounds for over 15 years. They're not just gardeners &mdash; they're custodians. Our property values reflect it.&rdquo;</blockquote>
+            <div class="test-author-clean">
+              <div class="test-avatar-clean">M</div>
+              <div>
+                <div class="test-author-name">Margaret Chen</div>
+                <div class="test-author-role">Strata Committee Chair, Mosman</div>
+              </div>
+            </div>
+          </div>
+          <div class="test-quote-clean">
+            <blockquote>&ldquo;Our pool area went from embarrassing to resort-level. Ray's work speaks for itself &mdash; 20 years and counting.&rdquo;</blockquote>
+            <div class="test-author-clean">
+              <div class="test-avatar-clean">S</div>
+              <div>
+                <div class="test-author-name">Sandra & Paul Webb</div>
+                <div class="test-author-role">Homeowners, Neutral Bay</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TWEAK 4 — Sticky phone bar on mobile
+     ============================================================ -->
+<div class="tweak">
+  <div class="tweak-label">
+    <div class="tweak-num">4</div>
+    <div>
+      <div class="tweak-title">Mobile: Sticky <em>Call</em> Button</div>
+      <div class="tweak-desc">A fixed bar at the bottom of mobile screens. One tap to call Ray. Always visible. This is the #1 conversion tool for local service businesses.</div>
+      <span class="tweak-impact impact-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="compare">
+    <div class="compare-side">
+      <div class="compare-tag tag-before">CURRENT</div>
+      <div class="compare-content">
+        <div class="phone-demo-wrapper">
+          <div class="phone-demo-bg">
+            <div class="no-sticky">
+              <p>Phone number is only visible<br>in the contact section<br>at the very bottom of the page</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-side">
+      <div class="compare-tag tag-after">SUGGESTED</div>
+      <div class="compare-content">
+        <div class="phone-demo-wrapper">
+          <div class="phone-demo-bg">
+            <p>No matter where you are on the page, Ray's number is always one tap away. Body corporate managers browsing on their phone between meetings? One tap.</p>
+            <br>
+            <p>This is the single highest-converting element for local service businesses. It's not fancy — it's effective.</p>
+          </div>
+          <div class="sticky-bar">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.98.37 1.94.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.87.33 1.83.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>Call Ray — 0417 473 273</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TWEAK 5 — Services: What they actually get
+     ============================================================ -->
+<div class="tweak">
+  <div class="tweak-label">
+    <div class="tweak-num">5</div>
+    <div>
+      <div class="tweak-title">Services: Tell Them What <em>They Get</em></div>
+      <div class="tweak-desc">Committee chairs want a checklist, not poetry. Show the deliverables alongside the description.</div>
+      <span class="tweak-impact impact-med">MEDIUM IMPACT</span>
+    </div>
+  </div>
+  <div class="compare">
+    <div class="compare-side">
+      <div class="compare-tag tag-before">CURRENT</div>
+      <div class="compare-content">
+        <div class="svc-before">
+          <div class="svc-card-mini">
+            <h4>Body Corporate</h4>
+            <p>Strata grounds, common areas, and building entries maintained to the highest standard. Our speciality for decades.</p>
+          </div>
+          <div class="svc-card-mini">
+            <h4>Residential Gardens</h4>
+            <p>Front entries, backyards, and everything in between. Designed for beauty and built to last through every season.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="compare-side">
+      <div class="compare-tag tag-after">SUGGESTED</div>
+      <div class="compare-content">
+        <div class="svc-after">
+          <div class="svc-row">
+            <div class="svc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <h4>Body Corporate & Strata</h4>
+              <p>Common areas, entries, garden beds, lawn care, seasonal planting, and waste removal. Regular schedule, same team every visit.</p>
+            </div>
+          </div>
+          <div class="svc-row">
+            <div class="svc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <h4>Residential Gardens</h4>
+              <p>Full garden maintenance, planting design, pruning, mulching, and seasonal colour. Weekly, fortnightly, or monthly visits.</p>
+            </div>
+          </div>
+          <div class="svc-row">
+            <div class="svc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <h4>Garden Transformations</h4>
+              <p>Complete soft-scape redesign. Ray plans, plants, and maintains. No subcontractors.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; padding: 60px 24px 80px;">
+  <p style="font-size:14px; color:var(--text-muted); max-width:500px; margin:0 auto; line-height:1.7;">None of these change the design. Same palette, same fonts, same photos, same Ray. They just make the site <strong>work harder</strong> for him.</p>
+</div>
+
+</body>
+</html>

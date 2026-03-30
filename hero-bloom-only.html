@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R.B. Kanangra Gardens — Bloom Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FBF7F8;
+  --text: #1C2A42;
+  --accent: #B4627E;
+  --accent-light: #CC8A9E;
+  --highlight: #8DB4CC;
+  --font-display: 'Libre Baskerville', serif;
+  --font-logo: 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
+  --font-body: 'Inter', sans-serif;
+  --radius-pill: 50px;
+  --shadow-glow: 0 4px 20px rgba(180, 98, 126, 0.3);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-body); background: #0a1a0a; color: #fff; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Nav */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 20px 0;
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1140px; margin: 0 auto; padding: 0 24px;
+}
+.nav-logo { display: flex; align-items: center; gap: 12px; }
+.nav-logo svg { width: 40px; height: 40px; }
+.nav-logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+.nav-logo-name { font-family: var(--font-logo); font-weight: 500; font-size: 16px; color: #fff; }
+.nav-logo-sub { font-family: var(--font-body); font-weight: 600; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: var(--accent); margin-top: 1px; }
+.nav-phone {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-display); font-size: 14px; color: rgba(255,255,255,0.85);
+}
+.nav-phone svg { opacity: 0.7; }
+
+/* Hero */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background: #0a1a0a;
+}
+.hero-bloom-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.hero-botanical {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+}
+.hero-botanical svg { position: absolute; opacity: 0.35; filter: blur(1px); }
+.hero-botanical .leaf-tl { top: -20px; left: -20px; width: 320px; }
+.hero-botanical .leaf-tr { top: -30px; right: -30px; width: 280px; transform: scaleX(-1); }
+.hero-botanical .leaf-bl { bottom: 60px; left: -40px; width: 260px; transform: rotate(180deg) scaleX(-1); }
+.hero-botanical .leaf-br { bottom: 60px; right: -20px; width: 300px; transform: rotate(180deg); }
+
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(10,26,10,0.3) 0%, rgba(10,26,10,0.6) 100%);
+  z-index: 2;
+}
+.hero-content {
+  position: relative; z-index: 3;
+  max-width: 900px; padding: 0 24px;
+}
+.hero-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--highlight);
+  margin-bottom: 20px;
+  opacity: 0; animation: fadeIn 0.8s ease 0.3s forwards;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6.5vw, 68px);
+  font-weight: 400; color: #fff; line-height: 1.08;
+  margin-bottom: 16px;
+  opacity: 0; animation: fadeIn 0.8s ease 0.5s forwards;
+}
+.hero h1 em { font-style: italic; color: var(--highlight); }
+.hero-subtitle {
+  font-size: clamp(15px, 2vw, 18px);
+  color: rgba(255,255,255,0.82); line-height: 1.7;
+  max-width: 540px; margin: 0 auto 32px;
+  opacity: 0; animation: fadeIn 0.8s ease 0.7s forwards;
+}
+.hero-buttons {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  opacity: 0; animation: fadeIn 0.8s ease 0.9s forwards;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 16px 36px; border-radius: var(--radius-pill);
+  font-weight: 700; font-size: 14px; letter-spacing: 0.3px;
+  transition: all 0.3s ease; cursor: pointer;
+}
+.btn-primary { background: var(--accent); color: #fff; box-shadow: var(--shadow-glow); }
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-outline { border: 2px solid rgba(255,255,255,0.5); color: #fff; }
+.btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+.hero-wave {
+  position: absolute; bottom: -2px; left: 0; right: 0; z-index: 4; line-height: 0;
+}
+.hero-wave svg { display: block; width: 100%; height: 48px; }
+
+/* Below hero — just show the bg so you can see the transition */
+.below { background: var(--bg); padding: 120px 24px; text-align: center; }
+.below p { font-family: var(--font-display); font-size: 20px; color: var(--text); opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="22" cy="22" r="5" fill="#6A9B7E"/>
+        <path d="M22 15c-3.5 0-7 2.8-7 7s3 6.5 7 7" stroke="#B4627E" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <path d="M22 11c-6 0-11 4.5-11 11s4.2 10 9 11" stroke="#CC8A9E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M22 7c-8.5 0-15 6.2-15 15s5.8 14 13 15" stroke="#E4D8DE" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M25 17c2.5 1.5 4 4 4 7s-2 5.5-4 6.5" stroke="#B4627E" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <path d="M28 12c4 2.5 6.5 6.5 6.5 11.5s-3.5 9-7 10.5" stroke="#CC8A9E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M30 8c5.5 3 9 8 9 15s-4 12-8 14" stroke="#E4D8DE" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">R.B. Kanangra</span>
+        <span class="nav-logo-sub">Gardens</span>
+      </div>
+    </a>
+    <a href="tel:+61417473273" class="nav-phone">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      0417 473 273
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <canvas class="hero-bloom-canvas" id="heroBloomCanvas"></canvas>
+
+  <!-- Botanical leaf frame -->
+  <div class="hero-botanical">
+    <svg class="leaf-tl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/><path d="M40 0 Q120 30 160 90 Q180 140 150 200 Q120 150 80 100 Q50 50 40 0Z" fill="#1a3a1a" opacity="0.7"/></svg>
+    <svg class="leaf-tr" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/></svg>
+    <svg class="leaf-bl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M40 0 Q120 30 160 90 Q180 140 150 200 Q120 150 80 100 Q50 50 40 0Z" fill="#0d2a0d" opacity="0.8"/></svg>
+    <svg class="leaf-br" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/></svg>
+  </div>
+
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Sydney's Trusted Garden Stewards &mdash; Est. 1990</p>
+    <h1>Gardens that <em>Mature</em>. Relationships that Last.</h1>
+    <p class="hero-subtitle">35 years of horticultural stewardship for Sydney's finest estates and corporate landscapes. No jargon. No shortcuts. Just genuine expertise.</p>
+    <div class="hero-buttons">
+      <a href="tel:+61417473273" class="btn btn-primary">Call Ray &mdash; 0417 473 273</a>
+      <a href="#below" class="btn btn-outline">View Our Gardens</a>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 48" preserveAspectRatio="none">
+      <path d="M0,24 C360,48 720,0 1080,24 C1260,36 1380,30 1440,24 L1440,48 L0,48 Z" fill="#FBF7F8"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============================================================
+     OPTION DIVIDERS
+     ============================================================ -->
+<style>
+.opt-divider {
+  max-width: 1140px; margin: 0 auto; padding: 80px 24px 24px;
+  display: flex; align-items: center; gap: 20px;
+}
+.opt-divider .num { font-family: var(--font-display); font-size: 13px; color: var(--accent); }
+.opt-divider .name { font-family: var(--font-display); font-size: 20px; font-weight: 400; color: var(--text); white-space: nowrap; }
+.opt-divider .name em { font-style: italic; color: var(--accent); }
+.opt-divider .line { flex: 1; height: 1px; background: #E4D8DE; }
+.opt-divider .desc { font-size: 12px; color: #647A94; max-width: 300px; text-align: right; }
+
+/* Option sections */
+.option-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+  background: #0a1a0a;
+}
+.option-hero .hero-botanical { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.option-hero .hero-botanical svg { position: absolute; opacity: 0.35; filter: blur(1px); }
+.option-hero .hero-botanical .leaf-tl { top: -20px; left: -20px; width: 320px; }
+.option-hero .hero-botanical .leaf-tr { top: -30px; right: -30px; width: 280px; transform: scaleX(-1); }
+.option-hero .hero-botanical .leaf-bl { bottom: 60px; left: -40px; width: 260px; transform: rotate(180deg) scaleX(-1); }
+.option-hero .hero-botanical .leaf-br { bottom: 60px; right: -20px; width: 300px; transform: rotate(180deg); }
+
+/* Option B — Split: text left, bloom right */
+.option-b {
+  align-items: center;
+}
+.option-b .split-left {
+  position: relative; z-index: 3;
+  width: 50%; padding: 0 clamp(24px, 5vw, 80px);
+}
+.option-b .split-right {
+  position: relative;
+  width: 50%; height: 100vh;
+}
+.option-b .bloom-canvas-b {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.5;
+}
+.option-b .hero-overlay {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(10,26,10,0.2) 0%, rgba(10,26,10,0.5) 100%);
+  z-index: 1;
+}
+
+/* Option C — Bloom as faint watermark, text dominates */
+.option-c {
+  align-items: center; justify-content: center; text-align: center;
+}
+.option-c .bloom-canvas-c {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.15;
+  z-index: 1;
+}
+.option-c .hero-overlay {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(10,26,10,0.3) 0%, rgba(10,26,10,0.6) 100%);
+  z-index: 2;
+}
+.option-c .hero-content { position: relative; z-index: 3; max-width: 900px; padding: 0 24px; }
+
+/* Option D — Bloom in lower third, text above */
+.option-d {
+  align-items: flex-start; justify-content: center; text-align: center;
+  padding-top: 15vh;
+}
+.option-d .bloom-canvas-d {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.4;
+  z-index: 1;
+}
+.option-d .hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,26,10,0.6) 0%, rgba(10,26,10,0.2) 50%, rgba(10,26,10,0.5) 100%);
+  z-index: 2;
+}
+.option-d .hero-content { position: relative; z-index: 3; max-width: 900px; padding: 0 24px; }
+
+/* Shared text styles for options */
+.opt-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--highlight); margin-bottom: 20px;
+}
+.opt-h1 {
+  font-family: var(--font-display); font-size: clamp(36px, 6.5vw, 68px);
+  font-weight: 400; color: #fff; line-height: 1.08; margin-bottom: 16px;
+}
+.opt-h1 em { font-style: italic; color: var(--highlight); }
+.opt-sub {
+  font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.82);
+  line-height: 1.7; max-width: 540px; margin-bottom: 32px;
+}
+.opt-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.bg-break { background: var(--bg); padding: 2px 0; }
+</style>
+
+<div class="bg-break"></div>
+
+<!-- ============================================================
+     OPTION B — SPLIT: Text Left, Bloom Right
+     ============================================================ -->
+<div class="opt-divider" style="background:var(--bg);">
+  <span class="num">B</span>
+  <span class="name">Split — Text Left, Bloom <em>Right</em></span>
+  <span class="line"></span>
+  <span class="desc">Each gets their own half. No competition. Bloom is the visual, text is the message.</span>
+</div>
+
+<section class="option-hero option-b">
+  <div class="hero-botanical">
+    <svg class="leaf-tl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/></svg>
+    <svg class="leaf-bl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M40 0 Q120 30 160 90 Q180 140 150 200 Q120 150 80 100 Q50 50 40 0Z" fill="#0d2a0d" opacity="0.8"/></svg>
+  </div>
+  <div class="split-left">
+    <p class="opt-eyebrow">Sydney's Trusted Garden Stewards &mdash; Est. 1990</p>
+    <h1 class="opt-h1">Gardens that <em>Mature</em>. Relationships that Last.</h1>
+    <p class="opt-sub">35 years of horticultural stewardship for Sydney's finest estates and corporate landscapes. No jargon. No shortcuts. Just genuine expertise.</p>
+    <div class="opt-buttons">
+      <a href="tel:+61417473273" class="btn btn-primary">Call Ray &mdash; 0417 473 273</a>
+      <a href="#" class="btn btn-outline">View Our Gardens</a>
+    </div>
+  </div>
+  <div class="split-right">
+    <canvas class="bloom-canvas-b" id="bloomB"></canvas>
+  </div>
+</section>
+
+<div class="bg-break"></div>
+
+<!-- ============================================================
+     OPTION C — WATERMARK: Bloom super faint, text dominates
+     ============================================================ -->
+<div class="opt-divider" style="background:var(--bg);">
+  <span class="num">C</span>
+  <span class="name">Watermark — Bloom as <em>Texture</em></span>
+  <span class="line"></span>
+  <span class="desc">Bloom at 15% opacity. You feel it more than see it. Text is king.</span>
+</div>
+
+<section class="option-hero option-c">
+  <div class="hero-botanical">
+    <svg class="leaf-tl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/><path d="M40 0 Q120 30 160 90 Q180 140 150 200 Q120 150 80 100 Q50 50 40 0Z" fill="#1a3a1a" opacity="0.7"/></svg>
+    <svg class="leaf-tr" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/></svg>
+    <svg class="leaf-bl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M40 0 Q120 30 160 90 Q180 140 150 200 Q120 150 80 100 Q50 50 40 0Z" fill="#0d2a0d" opacity="0.8"/></svg>
+    <svg class="leaf-br" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/></svg>
+  </div>
+  <canvas class="bloom-canvas-c" id="bloomC"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="opt-eyebrow">Sydney's Trusted Garden Stewards &mdash; Est. 1990</p>
+    <h1 class="opt-h1">Gardens that <em>Mature</em>. Relationships that Last.</h1>
+    <p class="opt-sub" style="margin-left:auto;margin-right:auto;">35 years of horticultural stewardship for Sydney's finest estates and corporate landscapes. No jargon. No shortcuts. Just genuine expertise.</p>
+    <div class="opt-buttons" style="justify-content:center;">
+      <a href="tel:+61417473273" class="btn btn-primary">Call Ray &mdash; 0417 473 273</a>
+      <a href="#" class="btn btn-outline">View Our Gardens</a>
+    </div>
+  </div>
+</section>
+
+<div class="bg-break"></div>
+
+<!-- ============================================================
+     OPTION D — BLOOM BELOW: Text top, bloom lower third
+     ============================================================ -->
+<div class="opt-divider" style="background:var(--bg);">
+  <span class="num">D</span>
+  <span class="name">Bloom <em>Below</em> — Text Floats Above</span>
+  <span class="line"></span>
+  <span class="desc">Camera shifted so bloom sits in the lower third. Text has clear sky above it.</span>
+</div>
+
+<section class="option-hero option-d">
+  <div class="hero-botanical">
+    <svg class="leaf-tl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/><path d="M40 0 Q120 30 160 90 Q180 140 150 200 Q120 150 80 100 Q50 50 40 0Z" fill="#1a3a1a" opacity="0.7"/></svg>
+    <svg class="leaf-tr" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/></svg>
+    <svg class="leaf-bl" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M40 0 Q120 30 160 90 Q180 140 150 200 Q120 150 80 100 Q50 50 40 0Z" fill="#0d2a0d" opacity="0.8"/></svg>
+    <svg class="leaf-br" viewBox="0 0 300 300" fill="none"><path d="M0 0 Q60 80 40 180 Q30 240 0 300 L0 0Z" fill="#1a3a1a"/><path d="M0 0 Q100 40 150 120 Q180 180 140 260 Q100 200 60 140 Q30 80 0 0Z" fill="#0d2a0d"/></svg>
+  </div>
+  <canvas class="bloom-canvas-d" id="bloomD"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="opt-eyebrow">Sydney's Trusted Garden Stewards &mdash; Est. 1990</p>
+    <h1 class="opt-h1">Gardens that <em>Mature</em>. Relationships that Last.</h1>
+    <p class="opt-sub" style="margin-left:auto;margin-right:auto;">35 years of horticultural stewardship for Sydney's finest estates and corporate landscapes. No jargon. No shortcuts. Just genuine expertise.</p>
+    <div class="opt-buttons" style="justify-content:center;">
+      <a href="tel:+61417473273" class="btn btn-primary">Call Ray &mdash; 0417 473 273</a>
+      <a href="#" class="btn btn-outline">View Our Gardens</a>
+    </div>
+  </div>
+</section>
+
+<div style="background:var(--bg);padding:80px;text-align:center;">
+  <p style="font-family:var(--font-display);font-size:16px;color:var(--text);opacity:0.3;">Scroll up to compare all four</p>
+</div>
+
+<!-- 3D Bloom -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+(function() {
+  const canvas = document.getElementById('heroBloomCanvas');
+  if (!canvas) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 2.4;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 2.5, 4.2);
+  camera.lookAt(0, 1.6, 0);
+
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.35, 0.3, 0.9));
+
+  scene.add(new THREE.AmbientLight(0xffeef5, 0.8));
+  scene.add(new THREE.HemisphereLight(0xffd4e0, 0x2a5a2a, 1.0));
+
+  const keyLight = new THREE.SpotLight(0xffd0b0, 7.0, 25, Math.PI / 4, 0.4, 0.8);
+  keyLight.position.set(3, 5, 4); keyLight.target.position.set(0, 1.5, 0);
+  scene.add(keyLight); scene.add(keyLight.target);
+
+  const frontFill = new THREE.SpotLight(0xffe0e8, 3.5, 20, Math.PI / 4, 0.6, 1);
+  frontFill.position.set(0, 3, 5); frontFill.target.position.set(0, 1.5, 0);
+  scene.add(frontFill); scene.add(frontFill.target);
+
+  const rimLight = new THREE.SpotLight(0x80a0dd, 4.0, 15, Math.PI / 5, 0.5, 0.8);
+  rimLight.position.set(-3, 4, -3); rimLight.target.position.set(0, 1.5, 0);
+  scene.add(rimLight); scene.add(rimLight.target);
+
+  scene.add(new THREE.PointLight(0xff6090, 2.0, 6).translateY(0.5).translateZ(0.5));
+  scene.add(new THREE.PointLight(0xffc0a0, 1.5, 8).translateX(3).translateY(2).translateZ(1));
+
+  function createPetalTexture(hue, sat, light, vein) {
+    const s = 512, c = document.createElement('canvas');
+    c.width = s; c.height = s;
+    const ctx = c.getContext('2d');
+    const g = ctx.createRadialGradient(s*0.5,s*0.1,0,s*0.5,s*0.5,s*0.7);
+    g.addColorStop(0,'hsl('+hue+','+(sat+10)+'%,'+(light-8)+'%)');
+    g.addColorStop(0.4,'hsl('+hue+','+sat+'%,'+light+'%)');
+    g.addColorStop(1,'hsl('+(hue-3)+','+(sat-8)+'%,'+(light+6)+'%)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,s,s);
+    ctx.globalCompositeOperation='multiply';
+    ctx.strokeStyle='hsla('+(hue+8)+','+(sat-15)+'%,'+(light-18)+'%,'+vein+')';
+    ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(s*0.5,0);
+    for(var y=0;y<s;y+=4)ctx.lineTo(s*0.5+Math.sin(y*0.02)*3,y);
+    ctx.stroke(); ctx.lineWidth=0.7;
+    for(var i=0;i<14;i++){var sy=s*(0.1+i*0.06),side=i%2===0?1:-1,len=s*(0.12+Math.random()*0.13);ctx.beginPath();ctx.moveTo(s*0.5,sy);for(var t=0;t<1;t+=0.06)ctx.lineTo(s*0.5+side*t*len,sy+t*len*0.4+Math.sin(t*8)*1.5);ctx.stroke();}
+    var id=ctx.getImageData(0,0,s,s);for(var j=0;j<id.data.length;j+=4){var n=(Math.random()-0.5)*12;id.data[j]+=n;id.data[j+1]+=n;id.data[j+2]+=n;}
+    ctx.putImageData(id,0,0);
+    var tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;return tex;
+  }
+
+  function createPetalGeo(w,h,curl,asym) {
+    var geo=new THREE.PlaneGeometry(w,h,14,20);var pos=geo.attributes.position;
+    for(var i=0;i<pos.count;i++){var x=pos.getX(i),y=pos.getY(i),z=pos.getZ(i);var ny=(y/h)+0.5,nx=x/w;x*=Math.sin(ny*Math.PI)*1.0+0.2;x+=Math.sin(ny*2.5)*asym*w*0.08;z+=ny*ny*curl*h;z-=Math.abs(nx)*2*Math.abs(nx)*2*h*0.05*ny;z+=Math.sin(nx*Math.PI*3)*0.006*ny;var tip=Math.max(0,ny-0.7)*3.33;z+=tip*tip*curl*h*0.3;pos.setXYZ(i,x,y,z);}
+    geo.computeVertexNormals();return geo;
+  }
+
+  var flowerGroup = new THREE.Group(); scene.add(flowerGroup);
+  var stemCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0.06,0,0.04),new THREE.Vector3(0.03,0.4,0.02),new THREE.Vector3(-0.02,0.8,-0.01),new THREE.Vector3(0.01,1.2,0),new THREE.Vector3(0,1.6,0),new THREE.Vector3(-0.01,1.85,0),new THREE.Vector3(0,2.05,0)]);
+  flowerGroup.add(new THREE.Mesh(new THREE.TubeGeometry(stemCurve,24,0.03,8,false),new THREE.MeshStandardMaterial({color:0x2d5a2d,roughness:0.65})));
+
+  function makeLeaf(size,px,py,pz,rz,ry){var shape=new THREE.Shape();shape.moveTo(0,0);shape.bezierCurveTo(size*0.35,size*0.12,size*0.5,size*0.4,size*0.45,size*0.65);shape.bezierCurveTo(size*0.35,size*0.9,size*0.15,size,0,size);shape.bezierCurveTo(-size*0.15,size,-size*0.35,size*0.9,-size*0.45,size*0.65);shape.bezierCurveTo(-size*0.5,size*0.4,-size*0.35,size*0.12,0,0);var geo=new THREE.ShapeGeometry(shape,12);var p=geo.attributes.position;for(var i=0;i<p.count;i++){var ny=p.getY(i)/size;p.setZ(i,ny*ny*size*0.1);}geo.computeVertexNormals();var leaf=new THREE.Mesh(geo,new THREE.MeshPhysicalMaterial({color:0x3a7a3a,roughness:0.45,side:THREE.DoubleSide,transmission:0.06,thickness:0.3}));leaf.position.set(px,py,pz);leaf.rotation.z=rz;leaf.rotation.y=ry;return leaf;}
+  flowerGroup.add(makeLeaf(0.4,0.04,0.5,0.02,-0.9,0.4));
+  flowerGroup.add(makeLeaf(0.35,-0.03,0.85,-0.01,0.8,-0.5));
+
+  var flowerHead = new THREE.Group(); flowerHead.position.y=2.05; flowerGroup.add(flowerHead);
+  var LAYERS=[{count:4,r:0.04,w:0.14,h:0.28,curl:0.15,hue:348,sat:55,light:55,vein:0.22,off:0},{count:5,r:0.08,w:0.18,h:0.35,curl:0.2,hue:350,sat:50,light:60,vein:0.18,off:0.6},{count:6,r:0.14,w:0.22,h:0.42,curl:0.28,hue:352,sat:48,light:65,vein:0.15,off:0.3},{count:7,r:0.2,w:0.26,h:0.48,curl:0.38,hue:354,sat:45,light:70,vein:0.13,off:0.8},{count:8,r:0.28,w:0.3,h:0.52,curl:0.5,hue:356,sat:42,light:75,vein:0.1,off:0.15}];
+
+  var petals=[];
+  LAYERS.forEach(function(cfg,li){for(var pi=0;pi<cfg.count;pi++){var angle=(pi/cfg.count)*Math.PI*2+cfg.off;var geo=createPetalGeo(cfg.w*(0.9+Math.random()*0.2),cfg.h*(0.9+Math.random()*0.2),cfg.curl*(0.8+Math.random()*0.4),(Math.random()-0.5)*2);var hj=(Math.random()-0.5)*5,sj=(Math.random()-0.5)*6,lj=(Math.random()-0.5)*5;var mat=new THREE.MeshPhysicalMaterial({map:createPetalTexture(cfg.hue+hj,cfg.sat+sj,cfg.light+lj,cfg.vein),roughness:0.4+Math.random()*0.1,side:THREE.DoubleSide,transparent:true,opacity:0.97,transmission:0.12+li*0.03,thickness:0.3+li*0.08,ior:1.45,sheen:0.3,sheenRoughness:0.4,sheenColor:new THREE.Color('hsl('+cfg.hue+','+(cfg.sat+15)+'%,'+(cfg.light+10)+'%)')});var petal=new THREE.Mesh(geo,mat);var pivot=new THREE.Group();pivot.position.set(Math.cos(angle)*cfg.r,-li*0.015,Math.sin(angle)*cfg.r);pivot.rotation.y=-angle+Math.PI/2;petal.rotation.x=-Math.PI*0.48;pivot.add(petal);flowerHead.add(pivot);var delay=li*0.15+(pi/cfg.count)*0.08+Math.random()*0.05;var target=-Math.PI*0.48+(0.5+li*0.22+Math.random()*0.12);petals.push({mesh:petal,closedRot:-Math.PI*0.48,openRot:target,delay:delay,wobPhase:Math.random()*Math.PI*2,wobSpeed:0.2+Math.random()*0.3,wobAmt:0.008+Math.random()*0.008});}});
+
+  var pistilGroup=new THREE.Group();pistilGroup.position.y=0.08;flowerHead.add(pistilGroup);
+  for(var si=0;si<20;si++){var sa=(si/20)*Math.PI*2+Math.random()*0.3,sr=0.02+Math.random()*0.04;var sg=new THREE.SphereGeometry(0.007+Math.random()*0.005,6,6);var sm=new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(0.12+Math.random()*0.05,0.8,0.5+Math.random()*0.15),roughness:0.3,emissive:new THREE.Color(0x604000),emissiveIntensity:0.3});var stamen=new THREE.Mesh(sg,sm);stamen.position.set(Math.cos(sa)*sr,0.02+Math.random()*0.03,Math.sin(sa)*sr);pistilGroup.add(stamen);}
+  pistilGroup.scale.set(0,0,0);
+
+  var moteCount=30;var moteGeo=new THREE.BufferGeometry();var mp=new Float32Array(moteCount*3);var ms=[];
+  for(var mi=0;mi<moteCount;mi++){mp[mi*3]=(Math.random()-0.5)*5;mp[mi*3+1]=Math.random()*4;mp[mi*3+2]=(Math.random()-0.5)*5;ms.push({dx:(Math.random()-0.5)*0.002,dy:0.001+Math.random()*0.003,dz:(Math.random()-0.5)*0.002,p:Math.random()*Math.PI*2});}
+  moteGeo.setAttribute('position',new THREE.BufferAttribute(mp,3));
+  scene.add(new THREE.Points(moteGeo,new THREE.PointsMaterial({color:0xf0d080,size:0.02,transparent:true,opacity:0.3,blending:THREE.AdditiveBlending})));
+
+  // === KEY DIFFERENCE: bloom stays, never fades ===
+  var bloomProgress = 0;
+  var bloomDuration = 5.0; // slightly slower bloom
+  var complete = false;
+  var clock = new THREE.Clock();
+
+  function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+  function resize() {
+    var w = window.innerWidth, h = window.innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    composer.setSize(w, h);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    var delta = clock.getDelta();
+    var elapsed = clock.getElapsedTime();
+
+    if (!complete) {
+      bloomProgress = Math.min(1, bloomProgress + delta / bloomDuration);
+      if (bloomProgress >= 1) complete = true;
+      // NO FADE — bloom canvas stays visible forever
+    }
+
+    for (var i = 0; i < petals.length; i++) {
+      var p = petals[i];
+      var t = Math.max(0, Math.min(1, (bloomProgress - p.delay) / (0.7 - p.delay * 0.3)));
+      t = easeOutExpo(t);
+      var rot = p.closedRot + (p.openRot - p.closedRot) * t;
+      if (complete) rot += Math.sin(elapsed * p.wobSpeed + p.wobPhase) * p.wobAmt;
+      p.mesh.rotation.x = rot;
+    }
+
+    var pt = easeOutExpo(Math.max(0, Math.min(1, (bloomProgress - 0.5) / 0.3)));
+    pistilGroup.scale.setScalar(pt);
+
+    var mpos = moteGeo.attributes.position;
+    for (var mi2 = 0; mi2 < moteCount; mi2++) {
+      var sp = ms[mi2];
+      mpos.setX(mi2, mpos.getX(mi2) + Math.sin(elapsed * 0.3 + sp.p) * sp.dx);
+      mpos.setY(mi2, mpos.getY(mi2) + sp.dy * 0.4);
+      mpos.setZ(mi2, mpos.getZ(mi2) + Math.cos(elapsed * 0.2 + sp.p) * sp.dz);
+      if (mpos.getY(mi2) > 5) { mpos.setY(mi2, 0); mpos.setX(mi2, (Math.random()-0.5)*5); mpos.setZ(mi2, (Math.random()-0.5)*5); }
+    }
+    mpos.needsUpdate = true;
+
+    flowerHead.rotation.y = Math.sin(elapsed * 0.1) * 0.03;
+    flowerHead.rotation.z = Math.cos(elapsed * 0.08) * 0.015;
+    camera.position.x = Math.sin(elapsed * 0.06) * 0.15;
+    camera.lookAt(0, 1.6, 0);
+    keyLight.intensity = 7.0 + Math.sin(elapsed * 0.3) * 0.4;
+
+    composer.render();
+  }
+  animate();
+
+  // === CLONE BLOOM for options B, C, D with different camera positions ===
+  function createBloomClone(canvasId, cameraPos, cameraLookAt, opacity) {
+    var c2 = document.getElementById(canvasId);
+    if (!c2) return;
+
+    var r2 = new THREE.WebGLRenderer({ canvas: c2, antialias: true, alpha: true });
+    r2.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    r2.toneMapping = THREE.ACESFilmicToneMapping;
+    r2.toneMappingExposure = 2.4;
+    r2.outputColorSpace = THREE.SRGBColorSpace;
+
+    var s2 = new THREE.Scene();
+    var cam2 = new THREE.PerspectiveCamera(38, c2.clientWidth / c2.clientHeight, 0.1, 100);
+    cam2.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+    cam2.lookAt(cameraLookAt[0], cameraLookAt[1], cameraLookAt[2]);
+
+    var comp2 = new EffectComposer(r2);
+    comp2.addPass(new RenderPass(s2, cam2));
+    comp2.addPass(new UnrealBloomPass(new THREE.Vector2(c2.clientWidth, c2.clientHeight), 0.35, 0.3, 0.9));
+
+    s2.add(new THREE.AmbientLight(0xffeef5, 0.8));
+    s2.add(new THREE.HemisphereLight(0xffd4e0, 0x2a5a2a, 1.0));
+    var kl = new THREE.SpotLight(0xffd0b0, 7.0, 25, Math.PI/4, 0.4, 0.8);
+    kl.position.set(3,5,4); kl.target.position.set(0,1.5,0);
+    s2.add(kl); s2.add(kl.target);
+    var ff = new THREE.SpotLight(0xffe0e8, 3.5, 20, Math.PI/4, 0.6, 1);
+    ff.position.set(0,3,5); ff.target.position.set(0,1.5,0);
+    s2.add(ff); s2.add(ff.target);
+    var rl = new THREE.SpotLight(0x80a0dd, 4.0, 15, Math.PI/5, 0.5, 0.8);
+    rl.position.set(-3,4,-3); rl.target.position.set(0,1.5,0);
+    s2.add(rl); s2.add(rl.target);
+    s2.add(new THREE.PointLight(0xff6090, 2.0, 6).translateY(0.5).translateZ(0.5));
+
+    var fg2 = flowerGroup.clone(true);
+    s2.add(fg2);
+
+    // Start already bloomed
+    var fh2 = fg2.children[fg2.children.length - 1]; // flower head
+
+    function resize2() {
+      var w = c2.clientWidth, h = c2.clientHeight;
+      if (w === 0 || h === 0) return;
+      cam2.aspect = w / h;
+      cam2.updateProjectionMatrix();
+      r2.setSize(w, h, false);
+      comp2.setSize(w, h);
+    }
+    resize2();
+    window.addEventListener('resize', resize2);
+
+    function anim2() {
+      requestAnimationFrame(anim2);
+      var e = clock.getElapsedTime();
+      fh2.rotation.y = Math.sin(e * 0.1) * 0.03;
+      fh2.rotation.z = Math.cos(e * 0.08) * 0.015;
+      cam2.position.x = cameraPos[0] + Math.sin(e * 0.06) * 0.15;
+      cam2.lookAt(cameraLookAt[0], cameraLookAt[1], cameraLookAt[2]);
+      kl.intensity = 7.0 + Math.sin(e * 0.3) * 0.4;
+      comp2.render();
+    }
+    anim2();
+  }
+
+  // B: bloom on the right half — camera slightly right and closer
+  createBloomClone('bloomB', [0.5, 2.5, 3.8], [0, 1.6, 0]);
+  // C: bloom centered but canvas is at 15% opacity via CSS
+  createBloomClone('bloomC', [0, 2.5, 4.2], [0, 1.6, 0]);
+  // D: camera higher, looking down — bloom appears in lower portion
+  createBloomClone('bloomD', [0, 3.8, 4.0], [0, 1.2, 0]);
+
+})();
+</script>
+
+</body>
+</html>
