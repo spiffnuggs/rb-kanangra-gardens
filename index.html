@@ -2480,6 +2480,40 @@ section {
   .flower-grid-item.show-label .flower-label {
     opacity: 1;
   }
+  .flower-preview {
+    display: none;
+    width: calc(100% - 6px);
+    margin: 8px 3px 0;
+    aspect-ratio: 4/3;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .flower-preview.active { display: block; }
+  .flower-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .flower-preview .flower-preview-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 24px 12px 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.5));
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.95);
+    text-align: center;
+  }
+  .flower-grid-item.selected {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: 6px;
+  }
+  .flower-grid-item.selected .flower-label {
+    opacity: 0 !important;
+  }
   #gardens .reveal[style*="text-align:center"] {
     padding: 24px 0 12px !important;
   }
@@ -3265,6 +3299,7 @@ section {
       <div class="flower-grid-item"><img src="images/IMG_8333.jpg" alt="Red crotons in tropical garden, Eastern Suburbs Sydney" loading="lazy"><span class="flower-label">Crotons</span></div>
       <div class="flower-grid-item"><img src="images/IMG_3439.jpeg" alt="Colourful bromeliads in a Kanangra Gardens landscaping project" loading="lazy"><span class="flower-label">Bromeliads</span></div>
     </div>
+    <div class="flower-preview" id="flowerPreview1"><img src="" alt=""><span class="flower-preview-label"></span></div>
     <p class="explore-hint" style="padding: 0 clamp(12px, 2vw, 24px);"><span class="hint-hover"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>hover to explore</span><span class="hint-touch"><svg viewBox="0 0 24 24"><path d="M15 15l-2 5L9 9l11 4-5 2z"/></svg>tap to explore</span></p>
   </div>
   <div class="quote-section reveal" style="padding: clamp(28px, 4vw, 56px) 0 clamp(40px, 6vw, 70px);">
@@ -3566,7 +3601,7 @@ section {
           <div class="pillar-flip-back">
             <span class="pfb-label">In Practice</span>
             <h4>It's Always in the <em>Details</em></h4>
-            <p>Ray chooses every plant by hand. Colour, texture, seasonal timing &mdash; nothing is left to chance. This is what separates gardening from stewardship.</p>
+            <p>Ray chooses every plant by hand. Colour, texture, seasonal timing &mdash; nothing is left to chance. This is where gardening becomes stewardship.</p>
             <div class="pillar-flip-year">A philosophy, not a project</div>
           </div>
         </div>
@@ -3582,7 +3617,7 @@ section {
             <div class="pillar-card-body">
               <span class="pillar-number">03</span>
               <h3>Integrity of Care</h3>
-              <p>No shortcuts. We treat your corporate or strata garden with the same respect as a private home. An immaculate exit, consistent reappraisal, and staying aligned with your vision.</p>
+              <p>No shortcuts. We treat your corporate or strata garden with the same respect as a private home. A tidy and flourishing site after every visit, consistent reappraisal, and staying aligned with your vision.</p>
             </div>
           </div>
           <div class="pillar-flip-back">
@@ -3639,6 +3674,7 @@ section {
     <div class="flower-grid-item"><img src="images/IMG_6994.jpg" alt="Lush garden walkway maintained by Kanangra Gardens, Sydney"><span class="flower-label">Garden Walkway</span></div>
     <div class="flower-grid-item"><img src="images/IMG_3212.jpg" alt="Tropical agave in Sydney landscape design by RB Kanangra" loading="lazy"><span class="flower-label">Agave</span></div>
   </div>
+  <div class="flower-preview" id="flowerPreview2"><img src="" alt=""><span class="flower-preview-label"></span></div>
 </div>
 
 <!-- ============================================================
@@ -4095,12 +4131,43 @@ function showMobileTest(i) {
   }, 200);
 }
 
-// --- Flower grid tap to show label on mobile ---
-document.querySelectorAll('.flower-grid-item').forEach(function(item) {
-  item.addEventListener('click', function() {
-    if (window.innerWidth <= 768) {
-      item.classList.toggle('show-label');
-    }
+// --- Flower grid tap to show preview on mobile ---
+document.querySelectorAll('.flower-grid-inner').forEach(function(grid) {
+  var preview = grid.nextElementSibling;
+  if (!preview || !preview.classList.contains('flower-preview')) return;
+  var previewImg = preview.querySelector('img');
+  var previewLabel = preview.querySelector('.flower-preview-label');
+
+  // Tap the preview to close it
+  preview.addEventListener('click', function() {
+    preview.classList.remove('active');
+    grid.querySelectorAll('.flower-grid-item').forEach(function(other) {
+      other.classList.remove('selected', 'show-label');
+    });
+  });
+
+  grid.querySelectorAll('.flower-grid-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      if (window.innerWidth <= 768) {
+        var img = item.querySelector('img');
+        var label = item.querySelector('.flower-label');
+        // If tapping the one that's already selected, close preview
+        if (item.classList.contains('selected')) {
+          item.classList.remove('selected');
+          preview.classList.remove('active');
+          return;
+        }
+        // Deselect others in this grid
+        grid.querySelectorAll('.flower-grid-item').forEach(function(other) {
+          other.classList.remove('selected', 'show-label');
+        });
+        item.classList.add('selected');
+        previewImg.src = img.src;
+        previewImg.alt = img.alt;
+        previewLabel.textContent = label ? label.textContent : '';
+        preview.classList.add('active');
+      }
+    });
   });
 });
 
