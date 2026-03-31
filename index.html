@@ -1174,22 +1174,19 @@ section {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(180, 98, 126, 0.12);
-  opacity: 1;
+  background: transparent;
+  opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
 }
-.flower-grid-item:hover::after { opacity: 0; }
 .flower-grid-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease, filter 0.5s ease;
-  filter: saturate(0.85);
 }
 .flower-grid-item:hover img {
   transform: scale(1.08);
-  filter: saturate(1.15);
 }
 .flower-label {
   position: absolute;
