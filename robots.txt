@@ -25,4 +25,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://rbkanangra.com.au/sitemap.xml
+Sitemap: https://rbkanangragardens.com.au/sitemap.xml
